@@ -7,14 +7,14 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/pass1" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="../sica_build/bin/pass1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../sica_build/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option parameters="sicCode.txt" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="../sicassembler" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
