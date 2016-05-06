@@ -11,7 +11,7 @@
 				<Option object_output="../sica_build/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="hazem_testCases.asm" />
+				<Option parameters="not_exist.txt" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -47,9 +47,12 @@
 		</Unit>
 		<Unit filename="include/InputReader.h" />
 		<Unit filename="include/IntermediateReader.h" />
+		<Unit filename="include/LiteralPool.h" />
+		<Unit filename="include/ObjectWriter.h" />
 		<Unit filename="include/OpTable.h" />
 		<Unit filename="include/OperandValidator.h" />
 		<Unit filename="include/PassOne.h" />
+		<Unit filename="include/PassTwo.h" />
 		<Unit filename="include/SymTable.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="out.txt">
@@ -65,11 +68,14 @@
 		<Unit filename="src/FreeFormatReader.cpp" />
 		<Unit filename="src/InputReader.cpp" />
 		<Unit filename="src/IntermediateReader.cpp" />
+		<Unit filename="src/LiteralPool.cpp" />
+		<Unit filename="src/ObjectWriter.cpp" />
 		<Unit filename="src/OpTable.cpp" />
 		<Unit filename="src/OperandValidator.cpp">
 			<Option weight="0" />
 		</Unit>
 		<Unit filename="src/PassOne.cpp" />
+		<Unit filename="src/PassTwo.cpp" />
 		<Unit filename="src/SymTable.cpp" />
 		<Extensions>
 			<code_completion />
