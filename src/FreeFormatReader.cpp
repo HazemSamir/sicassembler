@@ -14,8 +14,8 @@
   *   - does not contain any inline comments only seprated comments lines starts with '.'
   */
 
-const regex FREEFORMAT_REGEX0("(\\w+)?\\s+([\\+]?\\w+)\\s*", regex_constants::ECMAScript);
-const regex FREEFORMAT_REGEX1("((\\w+)\\s+)?([\\+]?\\w+)\\s([#\\w\\s\\-\\+\\'\\,\\=\\*]*)", regex_constants::ECMAScript);
+const regex FREEFORMAT_REGEX0("((\\w+)\\s+)?([\\+]?[a-zA-Z]+)\\s*", regex_constants::ECMAScript);
+const regex FREEFORMAT_REGEX1("((\\w+)\\s+)?([\\+]?[a-zA-Z]+)\\s([\\w\\W]*)", regex_constants::ECMAScript);
 
 bool FreeFormatReader::hasNextLine() {
     string line;
@@ -40,8 +40,8 @@ void FreeFormatReader::parse(string line) {
     autalities::dos2unix(line);
     smatch sm;
     if (regex_match(line, sm, FREEFORMAT_REGEX0)) {
-        label = sm[1];
-        operation = sm[2];
+        label = sm[2];
+        operation = sm[3];
     } else if (regex_match(line, sm, FREEFORMAT_REGEX1)) {
         label = sm[1];
         operation = sm[3];

@@ -33,6 +33,7 @@ void PassOne::pass() {
             if (operation == "start") {
                 if (!started) {
                     started = true;
+                    noStart = false;
                     handelStart(args, msg);
                 } else {
                     addErrorMessage(msg, "duplicated start statement");
@@ -98,7 +99,7 @@ void PassOne::pass() {
 }
 
 void PassOne::handelStart(vector<OperandValidator::Operand> args, string &msg) {
-    if (args.empty() || !args[0].isHex()) {
+    if (args.empty() || !(args[0].isHex() && args[0].isPlain())) {
         addErrorMessage(msg, "start must take hex argument");
     } else {
         locator = args[0].operand;
@@ -143,7 +144,7 @@ void PassOne::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     }
     int i = 0;
     for (auto arg : args) {
-        if (!arg.isNumber()) {
+        if (!(arg.isNumber() && arg.isPlain())) {
             addErrorMessage(msg, "word supports decimal numeric values only");
             break;
         }

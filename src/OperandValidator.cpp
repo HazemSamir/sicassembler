@@ -4,18 +4,25 @@ namespace OperandValidator {
 
 bool Operand::ofType(char c) {
     if(c == OperandTypeGroup::NUMBER) {
-        return isNumber();
+        return isNumber() && isPlain();
     } else if (c == OperandTypeGroup::HEX) {
-        return isHex();
+        return isHex() && isPlain();
     } else if (c == OperandTypeGroup::LITERAL) {
         return isLiteral();
     } else if (c == OperandTypeGroup::MEMORY) {
         return isMemory();
     } else if (c == OperandTypeGroup::POSNUMBER) {
-        return isPosNumber();
+        return isPosNumber() && isPlain();
+    } else if (c == OperandTypeGroup::REGESTER) {
+        return type == OperandType::REGESTER;
     }
     return false;
 }
+
+bool Operand::isPlain() {
+    return !(isImmediate || isIndexed || isInDirect);
+}
+
 
 bool Operand::isMemory() {
     return isPosNumber() || (isNumber() && isImmediate)
@@ -28,8 +35,7 @@ bool Operand::isLiteral() {
 }
 
 bool Operand::isNumber() {
-    return (type == OperandType::NUMBER && !isImmediate
-            && !isInDirect && !isIndexed);
+    return (type == OperandType::NUMBER);
 }
 
 bool Operand::isPosNumber() {
@@ -104,6 +110,10 @@ vector<Operand> getOperands(string field) {
         }
     }
     return operandList;
+}
+
+string Operand::stringType() {
+
 }
 
 string Operand::toHex() {

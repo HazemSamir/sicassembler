@@ -51,6 +51,7 @@ public:
     bool isImmediate = false, isInDirect = false, isIndexed = false;
 
     bool ofType(char c);
+    bool isPlain();
     bool isNumber();
     bool isPosNumber();
     bool isHex();
