@@ -74,9 +74,9 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     int format = isFormatFour ? 4 : opTab->getFormat(operation);
     string flags = "000000";
     if(format == 2) {
-        string address = evaluateOperand(args[0], msg).back();
+        string address = "" + evaluateOperand(args[0], msg).back();
         if(numberOfArgs == 2) {
-            address += evaluateOperand(args[2], msg).back();
+            address += ("" + evaluateOperand(args[2], msg).back());
         } else {
             address += '0';
         }
@@ -116,7 +116,7 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             while (address.length() > 3) {
                 address.erase(0);
             }
-        } else if (formate == 4) {
+        } else if (format == 4) {
             while (address.length() > 5) {
                 address.erase(0);
             }

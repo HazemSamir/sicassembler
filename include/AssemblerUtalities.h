@@ -39,6 +39,8 @@ namespace autalities {
 
     string toHex(int number);
 
+    int binToInteger(string a);
+
     int subtractHex(string a, string b);
 }
 #endif // ASSEMBLERUTALITIES_H

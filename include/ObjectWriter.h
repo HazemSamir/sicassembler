@@ -6,6 +6,7 @@
 #define ASSEMBLER_OBJECTWRITER_H
 
 #include "Includes.h"
+#include "AssemblerUtalities.h"
 
 const int MAX_RECORD_LENGTH = 17;
 class ObjectWriter {

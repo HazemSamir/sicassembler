@@ -24,7 +24,7 @@ void ObjectWriter::writeHeader(string start, string programName, string programL
 }
 
 void ObjectWriter::writeTextRecord(string opCode, string flags, string address) {
-	long long answer = autalities::toInteger(opcode);
+	int answer = autalities::toInteger(opCode);
 	answer <<= 4;
 	answer |= autalities::binToInteger(flags);
 	string result = autalities::toHex(answer);
@@ -39,7 +39,7 @@ void ObjectWriter::writeTextRecord(string start, string opCode, string flags, st
 
 void ObjectWriter::writeTextRecord(string start, string filed) {
     startNewRecord(start);
-    writeTextRecord(opCode, filed);
+    writeTextRecord(filed);
 }
 
 void ObjectWriter::writeEnd(string start) {
