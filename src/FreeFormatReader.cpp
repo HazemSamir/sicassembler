@@ -15,7 +15,7 @@
   */
 
 const regex FREEFORMAT_REGEX0("(\\w+)?\\s+([\\+]?\\w+)\\s*", regex_constants::ECMAScript);
-const regex FREEFORMAT_REGEX1("(\\w+)?\\s+([\\+]?\\w+)\\s([\\w\\s\\-\\+\\'\\,\\=\\*]*)", regex_constants::ECMAScript);
+const regex FREEFORMAT_REGEX1("((\\w+)\\s+)?([\\+]?\\w+)\\s([#\\w\\s\\-\\+\\'\\,\\=\\*]*)", regex_constants::ECMAScript);
 
 bool FreeFormatReader::hasNextLine() {
     string line;
@@ -36,15 +36,16 @@ bool FreeFormatReader::hasNextLine() {
     return isTrue;
 }
 
-void FreeFormatReader::parse(string &line) {
+void FreeFormatReader::parse(string line) {
+    autalities::dos2unix(line);
     smatch sm;
     if (regex_match(line, sm, FREEFORMAT_REGEX0)) {
         label = sm[1];
         operation = sm[2];
     } else if (regex_match(line, sm, FREEFORMAT_REGEX1)) {
         label = sm[1];
-        operation = sm[2];
-        operand = sm[3];
+        operation = sm[3];
+        operand = sm[4];
         autalities::removeTrailingSpaces(operand);
         operand = autalities::removeLeadingSpaces(operand);
     } else {

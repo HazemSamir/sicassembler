@@ -62,7 +62,7 @@ void removeTrailingSpaces(string &s) {
  * so we remove it
  */
 void dos2unix(string &s) {
-    if (s.back() == '\r') {
+    while (s.back() == '\r') {
         s.pop_back();
     }
 }

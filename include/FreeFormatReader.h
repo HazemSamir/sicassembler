@@ -7,7 +7,7 @@ public:
     FreeFormatReader(string fileName): InputReader(fileName) {}
     bool hasNextLine() override;
 protected:
-    void parse(string &line);
+    void parse(string line);
 private:
 };
 
