@@ -191,6 +191,9 @@ void PassOne::pass() {
             }
             //appendToFile(input.getLine());
             if(!input->isValid())msg += "\t\t" + input->getErrorMessage();
+            if(msg != ""){
+                msg = '*' + msg;
+            }
             outStream << msg;
         }
         if(!input->hasNextLine()) {
@@ -205,6 +208,7 @@ void PassOne::pass() {
         }
     }
     //appendToFile(input.getLine());
+    if(msg != "")msg = '*' + msg;
     outStream << msg;
     outStream << lineNumber;
     outStream << "\t" ;
@@ -213,7 +217,7 @@ void PassOne::pass() {
     outStream << input->getLine() ;
     outStream <<  "\n";
     if(!autalities::checkLocator(locator)){
-        msg += "\t\tlocator exceeds available memory\n";
+        msg += "*\t\tlocator exceeds available memory\n";
         outStream << msg;
         outStream.close();
         return;
@@ -221,14 +225,15 @@ void PassOne::pass() {
     outStream << "\t\t**********End of pass 1***********\n";
 
     ///Symbol table
-    for(auto x : symTab->getSymtab()){
+
+    /**for(auto x : symTab->getSymtab()){
         string s = x.first;
         while(s.size() < 15){
             s += " ";
         }
         s += autalities::toUp(x.second);
         outStream << s << "\n";
-    }
+    }**/
     outStream.close();
 }
 
@@ -264,3 +269,7 @@ PassOne::PassOne(InputReader *reader, string outputFile) {
 }
 
 PassOne::PassOne(string fileName, string outputFile) : PassOne::PassOne(new FreeFormatReader(fileName), outputFile) {}
+
+string PassOne::getProgramLength(){
+    return autalities::toHex(autalities::subtractHex(locator,startingAdress));
+}

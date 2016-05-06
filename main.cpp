@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <getopt.h>
 #include <PassOne.h>
+#include <PassTwo.h>
 #include <FixedFormatReader.h>
 
 using namespace std;
@@ -13,6 +14,9 @@ void runPass1(bool isFixed, string sourceName, string outputName) {
         p = new PassOne(sourceName, outputName);
     }
     p->pass();
+    PassTwo *p2;
+    p2 = new PassTwo(outputName,p->getSymTable(),nullptr,p->getProgramLength());
+    p2->pass();
 }
 
 void print_usage();

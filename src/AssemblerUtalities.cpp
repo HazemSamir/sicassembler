@@ -13,10 +13,10 @@ namespace autalities {
  * @return string converted to lowercase
  */
 string tolow(string s) {
-	for (int i = 0; i < s.size(); i++) {
-		s[i] = tolower(s[i]);
-	}
-	return s;
+    for (int i = 0; i < s.size(); i++) {
+        s[i] = tolower(s[i]);
+    }
+    return s;
 }
 
 /**
@@ -25,10 +25,19 @@ string tolow(string s) {
  * @return string converted to uppercase
  */
 string toUp(string s) {
-	for (int i = 0; i < s.size(); i++) {
-		s[i] = toupper(s[i]);
-	}
-	return s;
+    for (int i = 0; i < s.size(); i++) {
+        s[i] = toupper(s[i]);
+    }
+    return s;
+}
+
+string removeLeadingSpaces(string &s) {
+    int ls = 0;
+    for(; ls < s.size(); ++ls) {
+        if (s[ls] != ' ')
+            break;
+    }
+    return s.substr(ls);
 }
 
 /**
@@ -38,9 +47,9 @@ string toUp(string s) {
  */
 
 void removeTrailingSpaces(string &s) {
-	while (s.back() == ' ') {
-		s.pop_back();
-	}
+    while (s.back() == ' ') {
+        s.pop_back();
+    }
 }
 
 /**
@@ -65,11 +74,11 @@ void dos2unix(string &s) {
  */
 
 int toInteger(const string &txt) {
-	int x = 0;
-	for (int i = 0; i < txt.size(); i++) {
-		x = x * 10 + txt[i] - '0';
-	}
-	return x;
+    int x = 0;
+    for (int i = 0; i < txt.size(); i++) {
+        x = x * 10 + txt[i] - '0';
+    }
+    return x;
 }
 
 /**
@@ -81,10 +90,9 @@ int toInteger(const string &txt) {
 
 int hexToInteger(const char c) {
     char z = c;
-	int digit = tolower(z) - '0';
-	return digit + (digit > 9 ? (10 + '0' - 'a') : 0);
+    int digit = tolower(z) - '0';
+    return digit + (digit > 9 ? (10 + '0' - 'a') : 0);
 }
-
 /**
  * @param txt
  *          string hex chars
@@ -93,12 +101,12 @@ int hexToInteger(const char c) {
  */
 
 int hexToInteger(const string &txt) {
-	int x = 0;
-	int base = 16;
-	for (int i = 0; i < txt.size(); i++) {
-		x = x * base + hexToInteger(txt[i]);
-	}
-	return x;
+    int x = 0;
+    int base = 16;
+    for (int i = 0; i < txt.size(); i++) {
+        x = x * base + hexToInteger(txt[i]);
+    }
+    return x;
 }
 
 /**
@@ -109,7 +117,7 @@ int hexToInteger(const string &txt) {
  */
 
 char toHexChar(int d) {
-	return (d > 9 ? ('a' - 10) : '0') + d;
+    return (d > 9 ? ('a' - 10) : '0') + d;
 }
 
 /**
@@ -119,24 +127,81 @@ char toHexChar(int d) {
  */
 
 string toHex(int number) {
+    int msk = 0b1111;
+    string hex = "";
+    for(int i = 0; i < 4; ++i){
+        hex += toHexChar(number & msk);
+        number >>= 4;
+    }
+    reverse(hex.begin(), hex.end());
+    return hex;
+}
+
+string toBin(int number) {
 	string ans = "";
-	while (number != 0) {
-		ans += toHexChar(number % 16);
-		number /= 16;
+	while (number > 0) {
+		ans += (number % 2) ? "1" : "0";
+		number /= 2;
+	}
+	while (ans.length() < 4) {
+		ans += '0';
 	}
 	reverse(ans.begin(), ans.end());
-	while (ans.size() < 4) {
-		ans.insert(0, "0");
-	}
 	return ans;
 }
-bool isHex(const string & txt){
+
+int binToInteger(string a) {
+	int answer = 0;
+	for (int i = 0; i < a.length(); ++i) {
+		answer *= 2;
+		answer += a[i] - '0';
+	}
+	return answer;
+}
+
+int subtractHex(string a, string b) {
+    return (hexToInteger(a) - hexToInteger(b));
+}
+
+string toByte(int decimal) {
+    cout << "toByte "<< decimal<<"\n";
+    string hex = toHex(decimal);
+    while(hex.size() < 2) {
+        hex = "0" + hex;
+    }
+    while(hex.size() > 2) {
+        hex = hex.substr(hex.size() - 2);
+    }
+    return hex;
+}
+
+string toByte(string decimal) {
+    return toByte(toInteger(decimal));
+}
+
+string toWord(int decimal) {
+    string hex = toHex(decimal);
+    while(hex.size() < 6) {
+        hex = "0" + hex;
+    }
+    while(hex.size() > 6) {
+        hex.pop_back();
+    }
+    return hex;
+}
+
+string toWord(string decimal) {
+    return toWord(toInteger(decimal));
+}
+
+bool isHex(string & txt){
     for(int i = 0 ; i < txt.size() ; i++){
         if(txt[i] >= '0' && txt[i] <= '9' || tolower(txt[i]) >= 'a' && tolower(txt[i]) <= 'f');
         else return false;
     }
     return true;
 }
+
 bool checkLocator(string & txt){
     cout << txt << "\n";
     if(txt.size() > 6){

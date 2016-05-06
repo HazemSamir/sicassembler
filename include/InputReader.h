@@ -8,6 +8,7 @@
 
 #ifndef ASSEMBLERUTALITIES_H
 #include <AssemblerUtalities.h>
+#include <OperandValidator.h>
 #endif // ASSEMBLERUTALITIES_H
 
 const string LABEL_REGEX_STR = "([a-zA-Z][a-zA-Z0-9]*)?\\s*";
@@ -69,6 +70,8 @@ public:
 
     string getErrorMessage();
 
+    vector<OperandValidator::Operand> getArgs();
+
 protected:
     bool validateLabel();
     bool validateOperation();
@@ -84,6 +87,7 @@ protected:
     bool valid = true;
     string currentLine;
     string errorMessage;
+    vector<OperandValidator::Operand> args;
 };
 
 #endif // INPUTREADER_H

@@ -24,13 +24,13 @@ string InputReader::getOperand() {
 /** @brief (return operation field)
   */
 string InputReader::getOperation() {
-    return operation;
+    return autalities::tolow(operation);
 }
 
 /** @brief (return label field)
   */
 string InputReader::getLabel() {
-    return label;
+    return autalities::tolow(label);
 }
 
 
@@ -118,9 +118,12 @@ bool InputReader::validateLabel() {
   */
 bool InputReader::validateOperation() {
     smatch sm;
+    cout << "validate1 " <<  operation << "\n";
     if (regex_match(operation, sm, OPERATION_REGEX)) {
         operation = sm[OPERATION_MATCH_INDEX];
         isFour = (sm[OPERATION_MATCH_INDEX - 1] == "+");
+        cout << isFour << "\n";
+        cout << "validate2 " <<  operation << "\n";
         return true;
     }
     operation = "";
@@ -185,4 +188,10 @@ void InputReader::initVariables() {
     valid = true;
     isComment = false;
     isFour = false;
+    args.clear();
 }
+
+vector<OperandValidator::Operand> InputReader::getArgs() {
+    return args;
+}
+

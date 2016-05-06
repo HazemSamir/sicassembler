@@ -18,6 +18,7 @@ public:
     //virtual ~PassOne();
     void pass();
     SymTable *getSymTable();
+    string getProgramLength();
 
 private:
     InputReader *input;
