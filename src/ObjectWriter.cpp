@@ -17,11 +17,13 @@ void ObjectWriter::writeTextRecord(string opCode, string flags, string address) 
 }
 
 void ObjectWriter::writeTextRecord(string start, string opCode, string flags, string address) {
-
+    startNewRecord(start);
+    writeTextRecord(opCode, flags, address);
 }
 
 void ObjectWriter::writeTextRecord(string start, string filed) {
-
+    startNewRecord(start);
+    writeTextRecord(opCode, filed);
 }
 
 void ObjectWriter::writeEnd(string start) {
