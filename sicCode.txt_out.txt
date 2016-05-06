@@ -1,0 +1,39 @@
+1		.  copy  8 integers from u to v
+2		.  loop  index <> 1
+3	000000	prog     start   0
+4	000000	bgn      lds     #3
+5	000003	         ldt     #24
+6	000006	         +ldx     #0
+7	00000A	   loop     lDa     u,x
+8	00000D	         sta     v,x
+9	000010	                  addr    s,x
+10	000012	HAMada     compr                x,t
+11	000014	         jlt                *-10
+12	000017	         j       *
+13	.
+14	         .   list of values for u
+15	00001A	u                    word    1,2,3
+16	000023	         word            4
+17	000026	                 word    5
+18	000029	         word    6
+19	00002C	                   word        7
+20	00002F	         word    8
+21	.   array to store results
+22	000032	v        resw         100
+23	00015E	                     end
+		**********End of pass 1***********
+a              0
+b              3
+bgn            000000
+f              6
+hamada         000012
+l              2
+loop           00000A
+pc             8
+prog           000000
+s              4
+sw             9
+t              5
+u              00001A
+v              000032
+x              1
