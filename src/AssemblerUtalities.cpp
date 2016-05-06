@@ -137,6 +137,28 @@ string toHex(int number) {
     return hex;
 }
 
+string toBin(int number) {
+	string ans = "";
+	while (number > 0) {
+		ans += (number % 2) ? "1" : "0";
+		number /= 2;
+	}
+	while (ans.length() < 4) {
+		ans += '0';
+	}
+	reverse(ans.begin(), ans.end());
+	return ans;
+}
+
+int binToInteger(string a) {
+	int answer = 0;
+	for (int i = 0; i < a.length(); ++i) {
+		answer *= 2;
+		answer += a[i] - '0';
+	}
+	return answer;
+}
+
 int subtractHex(string a, string b) {
     return (hexToInteger(a) - hexToInteger(b));
 }

@@ -7,6 +7,7 @@
 
 #include "Includes.h"
 
+const int MAX_RECORD_LENGTH = 17;
 class ObjectWriter {
 public:
 
@@ -60,6 +61,12 @@ public:
      * @param: start : start address of the new text record
      */
     void startNewRecord(string start);
+
+private:
+	ofstream out;
+	string currentRecord;
+	string startAddress;
+	string opCodeToHex(string opCode);
 };
 
 

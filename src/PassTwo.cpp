@@ -19,12 +19,11 @@ PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, 
 
 void PassTwo::pass() {
     string msg = "";
-    bool started = false, noStart = true, noEnd = true;
 
     /// loop till end statement or no line remains
     while (input->hasNextLine()) {
         // lineNumber++;
-        if (noEnd && !input->isCommentLine()) { // not a comment line
+        if (!input->isCommentLine()) { // not a comment line
             /// handel start statement
             string operation = input->getOperation();
             string operand = input->getOperand();
@@ -48,9 +47,6 @@ void PassTwo::pass() {
                 base = args[0].operand;
             } else if (operation == "nobase") {
                 base = "";
-            } else if (operation == "end") {
-                noEnd = true;
-                opwriter->writeEnd(startingAdress);
             }
         }
         // write to log file
@@ -58,12 +54,17 @@ void PassTwo::pass() {
             // exit
         }
     }
+    opwriter->writeEnd(startingAdress);
     // write msg to log file
+
 }
 
 void PassTwo::handelStart(vector<OperandValidator::Operand> args, string label, string &msg) {
     startingAdress = locator = args[0].operand;
     opwriter->writeHeader(locator, label, length);
+    if (label.length() > 6) {
+        addErrorMessage(msg, "program name too long");
+    }
 }
 
 void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation,
@@ -73,9 +74,11 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     int format = isFormatFour ? 4 : opTab->getFormat(operation);
     string flags = "000000";
     if(format == 2) {
-        string address = evaluateOperand(args[0], msg);
+        string address = evaluateOperand(args[0], msg).back();
         if(numberOfArgs == 2) {
-            address += evaluateOperand(args[2], msg);
+            address += evaluateOperand(args[2], msg).back();
+        } else {
+            address += '0';
         }
         opwriter->writeTextRecord(opCode + address);
     } else {
@@ -108,6 +111,15 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             address = autalities::toHex(disp);
         } else if (format == 4 && autalities::toInteger(address) > MAX_MEMORY) {
             addErrorMessage(msg, "out of memory bounds");
+        }
+        if (format == 3) {
+            while (address.length() > 3) {
+                address.erase(0);
+            }
+        } else if (formate == 4) {
+            while (address.length() > 5) {
+                address.erase(0);
+            }
         }
         opwriter->writeTextRecord(opCode, flags, address);
     }

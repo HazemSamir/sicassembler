@@ -21,6 +21,9 @@ bool IntermediateReader::hasNextLine() {
             } else {
                 parse(line);
             }
+        } else {
+            //comment or warning
+            isComment = true;
         }
     }
     return isTrue;
