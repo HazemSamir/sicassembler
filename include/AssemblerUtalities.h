@@ -29,6 +29,16 @@ namespace autalities {
 
     char toHexChar(int d);
 
+    string toByte(string decimal);
+
+    string toByte(int decimal);
+
+    string toWord(string decimal);
+
+    string toWord(int decimal);
+
     string toHex(int number);
+
+    int subtractHex(string a, string b);
 }
 #endif // ASSEMBLERUTALITIES_H

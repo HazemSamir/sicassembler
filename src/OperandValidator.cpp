@@ -106,4 +106,18 @@ vector<Operand> getOperands(string field) {
     return operandList;
 }
 
+string Operand::toHex() {
+    string ret = "";
+    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL){
+        return operand;
+    } else if (type == OperandType::CBYTES || type == OperandType::CLITERAL) {
+        for(char c : operand) {
+            ret += autalities::toByte((int) c);
+        }
+    } else if (isNumber()) {
+        return autalities::toWord(operand);
+    }
+    return ret;
+}
+
 }

@@ -58,6 +58,8 @@ public:
     bool isMemory();
     bool isLiteral();
 
+    string toHex();
+
     string stringType();
 };
 

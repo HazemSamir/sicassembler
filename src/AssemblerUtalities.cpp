@@ -127,16 +127,48 @@ char toHexChar(int d) {
  */
 
 string toHex(int number) {
-    string ans = "";
-    while (number != 0) {
-        ans += toHexChar(number % 16);
-        number /= 16;
+    int msk = 0b1111;
+    string hex = "";
+    for(int i = 0; i < 6; ++i){
+        hex += toHexChar(number & msk);
+        number >>= 4;
     }
-    reverse(ans.begin(), ans.end());
-    while (ans.size() < 4) {
-        ans.insert(0, "0");
+    reverse(hex.begin(), hex.end());
+    return hex;
+}
+
+int subtractHex(string a, string b) {
+    return (hexToInteger(a) - hexToInteger(b));
+}
+
+string toByte(int decimal) {
+    string hex = toHex(decimal);
+    while(hex.size() < 2) {
+        hex = "0" + hex;
     }
-    return ans;
+    while(hex.size() > 2) {
+        hex = hex.substr(hex.size() - 3, 2);
+    }
+    return hex;
+}
+
+string toByte(string decimal) {
+    return toByte(toInteger(decimal));
+}
+
+string toWord(int decimal) {
+    string hex = toHex(decimal);
+    while(hex.size() < 6) {
+        hex = "0" + hex;
+    }
+    while(hex.size() > 6) {
+        hex.pop_back();
+    }
+    return hex;
+}
+
+string toWord(string decimal) {
+    return toWord(toInteger(decimal));
 }
 
 }

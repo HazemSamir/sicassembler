@@ -10,6 +10,8 @@
 class ObjectWriter {
 public:
 
+    ObjectWriter(string fileName);
+
     void writeHeader(string start, string programName, string programLength);
 
     /**
@@ -46,11 +48,18 @@ public:
     void writeTextRecord(string field);
 
     /**
-     * @brief: append to the text record
-     * @param: field : hex object to be writen in memory ex: 'test string' but convert it first to hex
-    */
+     * @brief: write end text record
+     * @param: start : hex start address of the program
+     */
 
     void writeEnd(string start);
+
+
+    /**
+     * @brief: write current record
+     * @param: start : start address of the new text record
+     */
+    void startNewRecord(string start);
 };
 
 

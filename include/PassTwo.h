@@ -11,47 +11,49 @@
 #include "SymTable.h"
 #include "InputReader.h"
 #include "IntermediateReader.h"
-
+#include "LiteralPool.h"
+#include "ObjectWriter.h"
 
 class PassTwo {
 public:
-    PassTwo(string fileName);
+    PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length);
 
     void pass();
 
 private:
-    InputReader *input;
+    IntermediateReader *input;
     OpTable *opTab;
     SymTable *symTab;
+    ObjectWriter *opwriter;
     string startingAdress = "000000";
     string locator = "000000";
     string outputFile;
+    string length;
     ofstream outStream;
     DirectivseTable *dirTab;
     int errorCounter = 0;
     string base = "";
 
-    void handelStart(vector<OperandValidator::Operand> args, string &msg);
+    void handelStart(vector<OperandValidator::Operand> args, string label, string &msg);
 
-    void handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation);
+    void handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation, bool isFormatFour);
 
     void handelWord(vector<OperandValidator::Operand> args, string &msg);
 
     void handelByte(vector<OperandValidator::Operand> args, string &msg);
 
-    void handelRes(vector<OperandValidator::Operand> args, string &msg, string &operation);
+    void handelResw(vector<OperandValidator::Operand> args, string &msg);
+
+    void handelResb(vector<OperandValidator::Operand> args, string &msg);
 
     void addToMessage(string &msg, string toBeAdded);
 
     void addErrorMessage(string &msg, string toBeAdded);
 
-    void addWarningMessage(string &msg, string toBeAdded);
-
-    void printSymTable();
-
     string addToLocator(string number, int delta);
 
-    void appendToFile(string line);
+    string evaluateOperand(OperandValidator::Operand &operand, string &msg);
+
 };
 
 

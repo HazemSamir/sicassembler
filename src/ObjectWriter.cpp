@@ -4,6 +4,10 @@
 
 #include "ObjectWriter.h"
 
+ObjectWriter::ObjectWriter(string fileName) {
+
+}
+
 void ObjectWriter::writeHeader(string start, string programName, string programLength) {
 
 }
@@ -28,13 +32,6 @@ void ObjectWriter::writeTextRecord(string field) {
 
 }
 
+void ObjectWriter::startNewRecord(string start) {
 
-
-
-
-
-
-
-
-
-
+}
