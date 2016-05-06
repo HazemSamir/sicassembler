@@ -89,7 +89,7 @@ void PassOne::pass() {
         addErrorMessage(msg, "no end found");
         outStream << msg;
     }
-    outStream << "\t\t**********End of pass 1***********\n";
+    outStream << "****\t**********End of pass 1***********\n";
     if (errorCounter > 0) {
         outStream << ">>> incomplete assembely with " << errorCounter << " errors\n";
     } else {
@@ -204,7 +204,7 @@ void PassOne::printSymTable() {
             s += " ";
         }
         s += x.second;
-        outStream << "\t\t" << s << "\n";
+        outStream << "****\t\t" << s << "\n";
     }
 }
 
