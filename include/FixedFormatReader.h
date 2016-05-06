@@ -1,7 +1,13 @@
 #ifndef FIXEDFORMATREADER_H
 #define FIXEDFORMATREADER_H
 
+#ifndef INCLUDES_H
+#include <Includes.h>
+#endif // INCLUDES_H
+
+#ifndef INPUTREADER_H
 #include <InputReader.h>
+#endif // INPUTREADER_H
 
 class FixedFormatReader : public InputReader {
 public:

@@ -27,6 +27,15 @@ bool OpTable::hasOperation(string operation) {
     return opTab.find(operation) != opTab.end();
 }
 
+/** @brief (string of m,n,r represents opernads types)
+  * m -> memory (label, numeric(+, hex), expresion, literal)
+  * n -> decimal number
+  * r -> register
+  */
+string OpTable::getOperandsType(string operation) {
+    return opTab[operation].operandsType;
+}
+
 /** @brief (initialize table from the given file)
   */
 OpTable::OpTable(string fileName) {
@@ -38,17 +47,21 @@ OpTable::OpTable(string fileName) {
         string Operation;
         int numberofoper;
         string opcod;
+        string operandsType = "";
         int format;
         Instruction ins;
         ss >> Operation;
         ss >> numberofoper;
         ss >> format ;
-        ss >> opcod ;
+        ss >> opcod;
+        if(numberofoper > 0) {
+            ss >> operandsType;
+        }
         ins.format = format;
         ins.numOfOperation = numberofoper;
         ins.opCode = opcod;
+        ins.operandsType = operandsType;
         opTab[Operation] = ins;
     }
     in.close();
 }
-

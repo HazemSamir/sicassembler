@@ -1,6 +1,6 @@
 .  copy  8 integers from u to v
 .  loop  index <> 1
-prog     start   0
+prog     start   0000
 bgn      lds     #3
          ldt     #24
          +ldx     #0
@@ -12,12 +12,12 @@ HAMada     compr                x,t
          j       *
 .
          .   list of values for u
-u                    word    1,2,3
+u                    word    -1,2,3
          word            4
                  word    5
          word    6
                    word        7
          word    8
 .   array to store results
-v        resw         100
+v        resw         8
                      end

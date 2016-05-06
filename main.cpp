@@ -1,9 +1,10 @@
-#include <bits/stdc++.h>
 #include <getopt.h>
 #include <PassOne.h>
 #include <FixedFormatReader.h>
 
-using namespace std;
+#ifndef INCLUDES_H
+#include <Includes.h>
+#endif // INCLUDES_H
 
 void runPass1(bool isFixed, string sourceName, string outputName) {
     PassOne *p;
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
     string source(sourcePath);
     string output;
     if (outputPath == NULL) {
-        output = source + "_out.txt";
+        output = "list_" + source;
     } else {
         output = *(new string(outputPath));
     }

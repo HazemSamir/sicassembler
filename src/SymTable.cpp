@@ -2,19 +2,7 @@
 
 /** @brief (empty constructor)
   */
-SymTable::SymTable() {
-
-//register names
-    symTab["a"] = "0";
-    symTab["x"] = "1";
-    symTab["l"] = "2";
-    symTab["b"] = "3";
-    symTab["s"] = "4";
-    symTab["t"] = "5";
-    symTab["f"] = "6";
-    symTab["pc"] = "8";//maybe no use
-    symTab["sw"] = "9";//maybe no use
-}
+SymTable::SymTable() {}
 
 /** @brief (return location counter of the given lable)
   */

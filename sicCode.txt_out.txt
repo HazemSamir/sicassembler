@@ -1,6 +1,6 @@
 1		.  copy  8 integers from u to v
 2		.  loop  index <> 1
-3	000000	prog     start   0
+3	000000	prog     start   0000
 4	000000	bgn      lds     #3
 5	000003	         ldt     #24
 6	000006	         +ldx     #0
@@ -19,21 +19,12 @@
 19	00002C	                   word        7
 20	00002F	         word    8
 21	.   array to store results
-22	000032	v        resw         100
-23	00015E	                     end
+22	000032	v        resw         8
+23	00004A	                     end
 		**********End of pass 1***********
-a              0
-b              3
 bgn            000000
-f              6
 hamada         000012
-l              2
-loop           00000A
-pc             8
+loop           00000a
 prog           000000
-s              4
-sw             9
-t              5
-u              00001A
+u              00001a
 v              000032
-x              1

@@ -1,257 +1,250 @@
 #include "PassOne.h"
-#include "FreeFormatReader.h"
-#include "FixedFormatReader.h"
 
-/** @brief (one liner)
-  *
-  * (documentation goes here)
+/** @brief (return symtable)
   */
 SymTable* PassOne::getSymTable() {
-
     return symTab;
-
-
 }
-/** @brief (one liner)
-  *
-  * (documentation goes here)
+
+/** @brief (parse input file validate it and fill symtable)
+  * print output file with:
+  *  1. location counter beside each statements
+  *  2. errors or warnings below each statement if any
+  *  3. symtable if successfully assembeled
   */
 void PassOne::pass() {
-
     int lineNumber = 1;
     string msg = "";
-    int startRead = 0;
-    while(input->hasNextLine() && input->isCommentLine()) {
-        //maybe print the comments in the file
-        outStream << lineNumber;
-        outStream << "\t\t" ;
-        outStream << input->getLine() ;
-        outStream <<  "\n";
-        lineNumber++;
-    }
-    string currentLine = input->getOperation();
-    currentLine = autalities::tolow(currentLine);
-    if(currentLine == "start") {
-        locator = input->getOperand();
-        startingAdress = locator;
-        while(startingAdress.size() < 6)startingAdress = '0' + startingAdress;
-        cout << locator << "\n";
-        if(autalities::isHex(locator) && locator.size() <= 6){
-            locator = startingAdress;
-        }
-        else{
-            locator = "000000";
-            msg += "\t\tinvalid relocatable address\n";
-        }
-    }
-    startRead = 1;
-    while(currentLine != "end") {
-        if(input->isCommentLine()) {
-            outStream << lineNumber;
-            outStream << "\t" ;
-            //outStream << locator;
-            //outStream << "\t";
-            outStream << input->getLine() ;
-            outStream <<  "\n";
-            lineNumber++;
-        } else {
-            string label = input->getLabel();
-            label = autalities::tolow(label);
-            //start label
-            if(label != "") {
-                if(symTab->hasLabel(label)) {
-                    //set error flag duplicate symbol
-                    msg = ("\t\t****Error:Symbol \'" + label + "\' already defined\n");
-                } else {
-                    symTab->insert(label, locator);
-                }
-            }
-            //end label
-            outStream << lineNumber;
-            outStream << "\t" ;
-            outStream << autalities::toUp(locator);
-            outStream << "\t";
-            outStream << input->getLine() ;
-            outStream <<  "\n";
-            lineNumber++;
-            if(!autalities::checkLocator(locator)){
-                msg += "\t\tlocator exceeds available memory\n";
-                outStream << msg;
-                outStream.close();
-                return;
-            }
-            //start operation
-            string operation = input->getOperation();
-            operation = autalities::tolow(operation);
-            if(operation != "") {
-                if(opTab->hasOperation(operation)) {
-                    int format = opTab->getFormat(operation);
-                    if(format == 3 && input->isFormatFour())format = 4;
-                    else if(input->isFormatFour()){
-                        msg += "\t\tinvalid conversion to format 4\n";
-                    }
-                    locator = addToLocator(locator, format);
-                    int numberOfOperand = opTab->getNumberOfOperands(operation);
-                    string operand = input->getOperand() + " ";
-                    if(numberOfOperand == 0) {  //RSUB
-                        if(operand != " ") {
-                            msg += "\t\twarning : rsub operand isn't empty\n";
-                        }
-                    } else if(numberOfOperand == 1) {
-                        if(regex_match(operand, INDEXING_REGEX) || regex_match(operand, IMMEDIATE_INDIRECT_REGEX)
-                                || regex_match(operand, OPERAND_REGEX) || regex_match(operand,IS_HEX_REGEX));
-                        else {
-                            msg += "\t\tinvalid operand\n";
-                        }
-                    } else {
-                        if(!regex_match(operand, TWO_OPERANDS_REGEX)) {
-                            msg += "\t\tinvalid register to register operand\n";
-                        }
-                    }
-                } else if(operation == "word") {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
-                    }
-                    string operand = input->getOperand();
-                    regex r("(#|@)?(-)?[0-9]+(,(-)?[0-9]+)*", regex_constants::ECMAScript);
-                    regex r1("(#|@)?[A-Za-z][A-Za-z0-9]*(,[Xx])?",regex_constants::ECMAScript);
-                    regex r2("(#|@)?((((-)?[0-9]+)|(0[0-9a-fA-F]*))((,(-)?[0-9]+)|(,0[0-9a-fA-F]*))*)",regex_constants::ECMAScript);
-                    if(regex_match(operand, r) || regex_match(operand,r2)){
-                        int comma = 0;
-                        for(int i = 0 ; i < operand.size() ; i++){
-                            if(operand[i] == ','){
-                                comma++;
-                            }
-                        }
-                        locator = addToLocator(locator, (comma+1)*3);
-                    }
-                    else if(regex_match(operand,r1))
-                        locator = addToLocator(locator,3);
-                    else msg += "\t\terror invalid word\n";
-                } else if(operation == "resw") {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
-                    }
-                    string operand = input->getOperand();
-                    regex r("[0-9]+", regex_constants::ECMAScript);
-                    if(regex_match(operand, r)) {
-                        int delta = input->getIncrement();
-                        locator = addToLocator(locator, delta);
-                    } else  msg += "\t\terror invalid resw value\n";
-                } else if(operation == "resb") {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
-                    }
-                    string operand = input->getOperand();
-                    regex r("[0-9]+", regex_constants::ECMAScript);
-                    if(regex_match(operand, r)) {
-                        int delta = input->getIncrement();
-                        locator = addToLocator(locator, delta);
-                    } else msg += "\t\terror invalid resb value\n";
-                } else if(operation == "byte") {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
-                    }
-                    string operand = input->getOperand();
-                    regex r1("[xX]\'[a-fA-F0-9]+\'", regex_constants::ECMAScript);
-                    regex r2("[cC]\'[\\w\\W ]+\'", regex_constants::ECMAScript);
-                    cout << operand << "\n";
-                    if(regex_match(operand, r1) || regex_match(operand, r2)) {
-                        int delta = input->getIncrement();
-                        locator = addToLocator(locator, delta);
-                    } else msg += "\t\t***error invalid byte string\n";
+    bool started = false, noStart = true, noEnd = true;
 
-                } else if(dirTab->contains(operation) && dirTab->notSupported(operation)) {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
+    /// loop till end statement or no line remains
+    while(input->hasNextLine()) {
+        /// print line
+        outStream << lineNumber << "\t" << autalities::toUp(locator) << "\t";
+        outStream << input->getLine() <<  "\n";
+        msg = "";
+        // lineNumber++;
+        if(noEnd && !input->isCommentLine()) { // not a comment line
+            /// handel start statement
+            string operation = input->getOperation();
+            string operand = input->getOperand();
+            auto args = input->getArgs(); // operand subfields
+
+            if(operation == "start") {
+                if (!started) {
+                    started = true;
+                    handelStart(args, msg);
+                } else {
+                    addErrorMessage(msg, "duplicated start statement");
+                }
+            } else {
+                if (noStart) {
+                    noStart = false;
+                    addErrorMessage(msg, "messing start statement");
+                }
+                /// handel label and add it to symtable
+                string label = input->getLabel();
+                if(!label.empty()) {
+                    if(symTab->hasLabel(label)) { //duplicate symbol
+                        addErrorMessage(msg, "Symbol \'" + label + "\' already defined\n");
+                    } else {
+                        symTab->insert(label, locator);
                     }
-                    msg += "\t\t****warning not supported directive\n";
-                } else if(dirTab->contains(operation)) {
-                    if(input->isFormatFour()){
-                        msg += "\t\tinvalid format 4 with directives\n";
-                    }
-                    if(autalities::tolow(operation) != "start"){           /// ??????
-                        string operand = input->getOperand() + " ";
-                        if(regex_match(operand, INDEXING_REGEX) || regex_match(operand, IMMEDIATE_INDIRECT_REGEX)
-                                || regex_match(operand, OPERAND_REGEX) || regex_match(operand,IS_HEX_REGEX));
-                        else {
-                            msg += "\t\tinvalid relocatable address\n";
-                        }
-                    }
-                    else if(autalities::tolow(operation) == "start"){
-                        if(startRead > 1){
-                            msg += "\t\tstart can't be written again\n";
-                        }
+                }
+                /// handel operation and operand field
+                if(args.empty() && !operand.empty()) { // args empty mean error to match it with any operand types
+                    addErrorMessage(msg, "wrong operand field");
+                }
+                if(!operation.empty()) {
+                    if(opTab->hasOperation(operation)) { // valid operation
+                        handelOperation(args, msg, operation);
+                    } else if(input->isFormatFour()) { // directive with format 4
+                        addErrorMessage(msg, "invalid format 4 with directives");
+                    } else if(operation == "word") {
+                        handelWord(args, msg);
+                    } else if(operation == "resw" || operation == "resb") {
+                        handelRes(args, msg, operation);
+                    } else if(operation == "byte") {
+                        handelByte(args, msg);
+                    } else if(operation == "end") {
+                        noEnd = false;
+                    } else if(dirTab->contains(operation) && dirTab->notSupported(operation)) {
+                        addWarningMessage(msg, "not supported directive");
+                    } else if(dirTab->contains(operation)) {
+                    } else {
+                        addErrorMessage(msg, "invalid operation code");
                     }
                 } else {
-                    //set error flag
-                    msg +=  "\t\t****invalid operation code\n";
-                    //outStream << "\t\t****invalid operation code\n";
+                    addErrorMessage(msg, "operation field is messing");
                 }
             }
-            //appendToFile(input.getLine());
-            if(!input->isValid())msg += "\t\t" + input->getErrorMessage();
+            if(!input->isValid())
+                addToMessage(msg, input->getErrorMessage());
             outStream << msg;
         }
-        if(!input->hasNextLine()) {
-            msg += "\t\tno end found\n";
-            break;
-        }
-        currentLine = input->getOperation();
-        currentLine = autalities::tolow(currentLine);
-        msg = "";
-        if(currentLine == "start"){
-            startRead++;
-        }
+        lineNumber++;
     }
-    //appendToFile(input.getLine());
-    outStream << msg;
-    outStream << lineNumber;
-    outStream << "\t" ;
-    outStream << autalities::toUp(locator);
-    outStream << "\t";
-    outStream << input->getLine() ;
-    outStream <<  "\n";
-    if(!autalities::checkLocator(locator)){
-        msg += "\t\tlocator exceeds available memory\n";
+    if(noEnd) {
+        addErrorMessage(msg, "no end found");
         outStream << msg;
-        outStream.close();
-        return;
     }
     outStream << "\t\t**********End of pass 1***********\n";
-
-    ///Symbol table
-    for(auto x : symTab->getSymtab()){
-        string s = x.first;
-        while(s.size() < 15){
-            s += " ";
-        }
-        s += autalities::toUp(x.second);
-        outStream << s << "\n";
+    if(errorCounter > 0) {
+        outStream << ">>> incomplete assembely with " << errorCounter << " errors\n";
+    } else {
+        printSymTable();
     }
     outStream.close();
 }
 
+void PassOne::handelStart(vector<OperandValidator::Operand> args, string &msg) {
+    if(args.empty() || !args[0].isHex()) {
+        addErrorMessage(msg, "start must take hex argument");
+    } else {
+        locator = args[0].operand;
+        startingAdress = locator;
+        while(startingAdress.size() < 6) startingAdress = '0' + startingAdress;
+        locator = startingAdress;
+    }
+}
+
+/** @brief (validate operation field and its operands and update location counter)
+ */
+void PassOne::handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation) {
+    int format = opTab->getFormat(operation);
+    if(format == 3 && input->isFormatFour()) format = 4;
+    else if(input->isFormatFour()) {
+        addErrorMessage(msg, "invalid conversion to format 4");
+    }
+    locator = addToLocator(locator, format);
+    int numberOfOperand = opTab->getNumberOfOperands(operation);
+    string operandsType = opTab->getOperandsType(operation);
+
+    if(args.size() < numberOfOperand) {
+        addErrorMessage(msg, "messing operands");
+        return;
+    } else if(args.size() > numberOfOperand) {
+        addWarningMessage(msg, "args more than required for " + operation);
+    }
+    for(int i = 0; i < numberOfOperand; ++i) {
+        if(!args[i].ofType(operandsType[i])) {
+            addErrorMessage(msg, operation + " does not support operand type");
+            break;
+        }
+    }
+}
+
+/** @brief (handel WORD directive and its operands and update location counter)
+ */
+void PassOne::handelWord(vector<OperandValidator::Operand> args, string &msg) {
+    if(args.size() < 1) {
+        addErrorMessage(msg, "messing valid operand");
+        return;
+    }
+    int i = 0;
+    for(auto arg : args) {
+        if(!arg.isNumber()) {
+            addErrorMessage(msg, "word supports decimal numeric values only");
+            break;
+        }
+        i++;
+    }
+    locator = addToLocator(locator, i * 3);
+}
+
+/** @brief (handel BYTE directive and its operands and update location counter)
+ */
+void PassOne::handelByte(vector<OperandValidator::Operand> args, string &msg) {
+    if(args.size() < 1) {
+        addErrorMessage(msg, "messing operand");
+        return;
+    } else if (args.size() > 1) {
+        addWarningMessage(msg, "args more than required for byte");
+    }
+    if (args[0].type == OperandValidator::OperandType::CBYTES) {
+        int arrSize = args[0].operand.size();
+        locator = addToLocator(locator, arrSize);
+    } else if (args[0].type == OperandValidator::OperandType::XBYTES) {
+        int arrSize = args[0].operand.size();
+        if(arrSize % 2)
+            addErrorMessage(msg, "odd length for hex string");
+        else
+            locator = addToLocator(locator, arrSize / 2);
+    } else {
+        addErrorMessage(msg, "invalid operand for byte");
+    }
+}
+
+/** @brief (handel RESW,RESB directive and its operands and update location counter)
+ */
+void PassOne::handelRes(vector<OperandValidator::Operand> args, string &msg, string &operation) {
+    if(args.size() < 1) {
+        addErrorMessage(msg, "messing operand");
+        return;
+    } else if (args.size() > 1) {
+        addWarningMessage(msg, "args more than required for " + operation);
+    }
+    if (!args[0].isPosNumber()) {
+        addErrorMessage(msg, "operand must be positive numerical value");
+    } else {
+        int arrSize = autalities::toInteger(args[0].operand);
+        int elementSize = operation == "resw" ? 3 : 1;
+        locator = addToLocator(locator, arrSize * elementSize);
+    }
+}
+
+/** @brief (print symtable contents to output stream after success assemble)
+ */
+void PassOne::printSymTable() {
+    ///Symbol table
+    for(auto x : symTab->getSymtab()) {
+        string s = x.first;
+        while(s.size() < 15) {
+            s += " ";
+        }
+        s += x.second;
+        outStream << "\t\t" << s << "\n";
+    }
+}
+
+/** @brief (add message with "warning")
+ */
+void PassOne::addWarningMessage(string &msg, string toBeAdded) {
+    // warningCounter++;
+    addToMessage(msg, "warning: " + toBeAdded);
+}
+
+/** @brief (add message with "error" and increament errorCounter)
+ */
+void PassOne::addErrorMessage(string &msg, string toBeAdded) {
+    errorCounter++;
+    addToMessage(msg, "error: " + toBeAdded);
+}
+
+/** @brief (add new line to message)
+ */
+void PassOne::addToMessage(string &msg, string toBeAdded) {
+    if(!toBeAdded.empty()) {
+        msg += "****\t\t" + toBeAdded + "\n";
+    }
+}
 
 void PassOne::appendToFile(string line) {
     //write to file
     outStream << line + '\n';
 }
 
+/** @brief (update location counter)
+ */
 string PassOne::addToLocator(string number, int delta) {
     int x = autalities::hexToInteger(number);
-    cout << x << "\n";
     x += delta;
-    cout << x << "\n";
     string temp = autalities::toHex(x);
-    cout << temp << "\n";
     while(temp.size() < 6)temp = '0' + temp;
     return temp;
 }
 
-/** @brief (one liner)
-  *
-  * (documentation goes here)
+/** @brief (constructor initialze variables)
   */
 
 PassOne::PassOne(InputReader *reader, string outputFile) {

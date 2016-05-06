@@ -1,15 +1,28 @@
 #ifndef PASSONE_H
 #define PASSONE_H
-#include "Includes.h"
-#include "InputReader.h"
-#include "FixedFormatReader.h"
-#include "OpTable.h"
-#include "SymTable.h"
-#include "DirectivseTable.h"
 
-#ifndef ASSEMBLERUTALITIES_H
-#include <AssemblerUtalities.h>
-#endif // ASSEMBLERUTALITIES_H
+#ifndef INCLUDES_H
+#include <Includes.h>
+#endif // INCLUDES_H
+
+#ifndef INPUTREADER_H
+#include <InputReader.h>
+#endif // INPUTREADER_H
+
+#ifndef READERS_H
+#include <FreeFormatReader.h>
+#include <FixedFormatReader.h>
+#endif // READERS_H
+
+#ifndef TABELS
+#include <OpTable.h>
+#include <DirectivseTable.h>
+#include <SymTable.h>
+#endif // TABELS
+
+#ifndef OPERANDVALIDATOR_H
+#include <OperandValidator.h>
+#endif // OPERANDVALIDATOR_H
 
 class PassOne {
 public:
@@ -28,6 +41,19 @@ private:
     string outputFile;
     ofstream outStream;
     DirectivseTable *dirTab;
+    int errorCounter = 0;
+
+    void handelStart(vector<OperandValidator::Operand> args, string &msg);
+    void handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation);
+    void handelWord(vector<OperandValidator::Operand> args, string &msg);
+    void handelByte(vector<OperandValidator::Operand> args, string &msg);
+    void handelRes(vector<OperandValidator::Operand> args, string &msg, string &operation);
+
+    void addToMessage(string &msg, string toBeAdded);
+    void addErrorMessage(string &msg, string toBeAdded);
+    void addWarningMessage(string &msg, string toBeAdded);
+
+    void printSymTable();
 
     string addToLocator(string number, int delta);
     void appendToFile(string line);

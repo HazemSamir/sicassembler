@@ -24,45 +24,18 @@ string InputReader::getOperand() {
 /** @brief (return operation field)
   */
 string InputReader::getOperation() {
-    return operation;
+    return autalities::tolow(operation);
 }
 
 /** @brief (return label field)
   */
 string InputReader::getLabel() {
-    return label;
+    return autalities::tolow(label);
 }
 
-
-/** @brief (return increament of location counter in case of memory directive)
-  * memory directives :
-  * byte : return number of bytes = (number of chars in case of C'..' or number of hex_digits/2 in case of X'..')
-  * word : return 3
-  * resb : return number of bytes in operand
-  * resw : return number of words in operand * 3
-  *
-  * this function assumed to be called after required validation to both operation and operand feild so there is no validation goes here
-  */
-int InputReader::getIncrement() {
-    if(autalities::tolow(operation) == "resb") {
-        return autalities::toInteger(operand);
-    } else if (autalities::tolow(operation) == "resw") {
-        return 3 * autalities::toInteger(operand);
-    } else if (autalities::tolow(operation) == "byte") {
-        int len = operand.size() - 3;
-        if(tolower(operand[0]) == 'x') {
-            if(len % 2) {
-                valid = false;
-                addToErrorMessage("Odd number of hexadecimal digits");
-            }
-        }
-        return (tolower(operand[0]) == 'c' ? len : len / 2);
-    } else if (autalities::tolow(operation) == "word") {
-        return 3;
-    }
-    return 0;
+vector<OperandValidator::Operand> InputReader::getArgs() {
+    return args;
 }
-
 
 /** @brief (return true if line contains no errors)
   */
@@ -103,11 +76,15 @@ bool InputReader::validateLabel() {
     smatch sm;
     if (regex_match(label, sm, LABEL_REGEX)) {
         label = sm[LABEL_MATCH_INDEX];
-        return true;
+        if(!regex_match(label, sm, OperandValidator::RIGESTER_REGEX)) {
+            return true;
+        } else {
+            addToErrorMessage("label cannot be a register name");
+        }
     }
     label = "";
     valid = false;
-    addToErrorMessage("wrong label operand field");
+    addToErrorMessage("wrong label field");
     return false;
 }
 
@@ -125,52 +102,7 @@ bool InputReader::validateOperation() {
     }
     operation = "";
     valid = false;
-    addToErrorMessage("wrong format operation field");
-    return false;
-}
-
-
-/** @brief (validate operation field with regex)
-  * match operand with different operand regexes and extract operand from string
-  * if does not match make operand field empty and generate error message
-  */
-bool InputReader::validateOperand() {
-    if(autalities::tolow(operation) == "word"){
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    }
-    smatch sm;
-    regex r1("[xX]\'[a-fA-F0-9]+\'\\s*", regex_constants::ECMAScript);
-    regex r2("[cC]\'(\\w|\\W)+\'\\s*", regex_constants::ECMAScript);
-    if(regex_match(operand, r1) || regex_match(operand, r2)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if (regex_match(operand, sm, OPERAND_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if (regex_match(operand, sm, IMMEDIATE_INDIRECT_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if (regex_match(operand, sm, TWO_OPERANDS_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if (regex_match(operand, sm, LITERAL_CHAR_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if(regex_match(operand, sm, LITERAL_HEX_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if(regex_match(operand, sm, INDEXING_REGEX)) {
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    } else if(regex_match(operand , sm, IS_HEX_REGEX)){
-        autalities::removeTrailingSpaces(operand);
-        return true;
-    }
-    operand = "";
-    valid = false;
-    addToErrorMessage("wrong format operand field");
-    //cout << operand << "\n";
+    addToErrorMessage("wrong operation field");
     return false;
 }
 
@@ -185,4 +117,5 @@ void InputReader::initVariables() {
     valid = true;
     isComment = false;
     isFour = false;
+    args.clear();
 }

@@ -1,10 +1,13 @@
 #ifndef OPTABLE_H
 #define OPTABLE_H
-#include "Includes.h"
+
+#ifndef INCLUDES_H
+#include <Includes.h>
+#endif // INCLUDES_H
 
 struct Instruction {
     int format, numOfOperation;
-    string opCode;
+    string opCode, operandsType;
     //  Instruction(int format, int numOfOperation, string opCode)
     //  :format(format), numOfOperation(numOfOperation), opCode(opCode){}
 };
@@ -24,6 +27,7 @@ public:
     int getFormat(string operation);
     string getOpcode(string operation);
     int getNumberOfOperands(string operation);
+    string getOperandsType(string operation);
 private:
     // map operation -> format , opcode , numberOfOperands
     unordered_map<string, Instruction> opTab;
