@@ -245,6 +245,14 @@ string PassOne::addToLocator(string number, int delta) {
     return temp;
 }
 
+string PassOne::getprogrammLength() {
+    return autalities::toHex(autalities::hexToInteger(locator) - autalities::hexToInteger(startingAdress));
+}
+
+int PassOne::getErrorsCounter() {
+    return errorCounter;
+}
+
 /** @brief (constructor initialze variables)
   */
 

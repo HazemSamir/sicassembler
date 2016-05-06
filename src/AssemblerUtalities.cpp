@@ -34,7 +34,7 @@ string toUp(string s) {
 string removeLeadingSpaces(string &s) {
     int ls = 0;
     for(; ls < s.size(); ++ls) {
-        if (s[ls] != ' ')
+        if (s[ls] != ' ' && s[ls] != '\t')
             break;
     }
     return s.substr(ls);
@@ -47,7 +47,7 @@ string removeLeadingSpaces(string &s) {
  */
 
 void removeTrailingSpaces(string &s) {
-    while (s.back() == ' ') {
+    while (s.back() == ' ' || s.back() == '\t') {
         s.pop_back();
     }
 }

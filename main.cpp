@@ -6,6 +6,8 @@
 #include <Includes.h>
 #endif // INCLUDES_H
 
+#include "PassTwo.h"
+
 void runPass1(bool isFixed, string sourceName, string outputName) {
     PassOne *p;
     if(isFixed) {
@@ -14,6 +16,9 @@ void runPass1(bool isFixed, string sourceName, string outputName) {
         p = new PassOne(sourceName, outputName);
     }
     p->pass();
+    cout << "\n***************************\n\n";
+    PassTwo *p2 = new PassTwo(outputName, p->getSymTable(), nullptr, p->getprogrammLength());
+    p2->pass();
 }
 
 void print_usage();

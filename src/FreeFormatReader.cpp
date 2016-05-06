@@ -43,7 +43,7 @@ void FreeFormatReader::parse(string line) {
         label = sm[2];
         operation = sm[3];
     } else if (regex_match(line, sm, FREEFORMAT_REGEX1)) {
-        label = sm[1];
+        label = sm[2];
         operation = sm[3];
         operand = sm[4];
         autalities::removeTrailingSpaces(operand);

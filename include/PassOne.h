@@ -43,6 +43,10 @@ public:
 
     SymTable *getSymTable();
 
+    string getprogrammLength();
+
+    int getErrorsCounter();
+
 private:
     InputReader *input;
     OpTable *opTab;

@@ -76,7 +76,7 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     if(format == 2) {
         string address = "" + evaluateOperand(args[0], msg).back();
         if(numberOfArgs == 2) {
-            address += ("" + evaluateOperand(args[2], msg).back());
+            address += ("" + evaluateOperand(args[1], msg).back());
         } else {
             address += '0';
         }
@@ -162,7 +162,7 @@ void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
 }
 
 string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
-    if(operand.type == OperandValidator::OperandType::LABEL) {
+    if(operand.type == OperandValidator::OperandType::LABEL || operand.type == OperandValidator::OperandType::REGESTER) {
         if (symTab->hasLabel(operand.operand)) {
             return symTab->getLocator(operand.operand);
         } else {
