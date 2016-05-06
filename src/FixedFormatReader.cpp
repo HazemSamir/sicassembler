@@ -18,7 +18,7 @@ const int MAX_LINE_LENGTH = 66;
 
 bool FixedFormatReader::hasNextLine() {
     string line;
-    bool isTrue = getline(in, line); // there exist a line
+    bool isTrue = ((bool)getline(in, line)); // there exist a line
     initVariables();
     autalities::dos2unix(line);
     currentLine = line;

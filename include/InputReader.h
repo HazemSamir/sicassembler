@@ -6,11 +6,11 @@
 #endif // INCLUDES_H
 
 #ifndef ASSEMBLERUTALITIES_H
-#include <AssemblerUtalities.h>
+#include "AssemblerUtalities.h"
 #endif // ASSEMBLERUTALITIES_H
 
 #ifndef OPERANDVALIDATOR_H
-#include <OperandValidator.h>
+#include "OperandValidator.h"
 #endif // OPERANDVALIDATOR_H
 
 const regex LABEL_REGEX("([a-zA-Z][a-zA-Z0-9]*)?\\s*", regex_constants::ECMAScript);

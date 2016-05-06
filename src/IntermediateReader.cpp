@@ -1,22 +1,22 @@
-#include <IntermediateReader.h>
+#include "IntermediateReader.h"
 
 bool IntermediateReader::hasNextLine() {
     string line;
     bool isTrue;
     do {
-        isTrue = getline(in, line);
+        isTrue = ((bool) getline(in, line));
         line = autalities::removeLeadingSpaces(line);
-    } while(isTrue && line.empty());
+    } while (isTrue && line.empty());
     initVariables();
     currentLine = line;
-    if(isTrue) {
+    if (isTrue) {
         stringstream ss(line);
         string tmp;
         ss >> tmp;
-        if(tmp[0] != '*') {
+        if (tmp[0] != '*') {
             ss >> locator;
             getline(ss, line);
-            if(line[0] == '.') {
+            if (line[0] == '.') {
                 isComment = true;
             } else {
                 parse(line);

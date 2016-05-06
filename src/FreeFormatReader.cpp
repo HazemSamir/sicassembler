@@ -21,13 +21,13 @@ bool FreeFormatReader::hasNextLine() {
     string line;
     bool isTrue;
     do {
-        isTrue = getline(in, line);
+        isTrue = ((bool) getline(in, line));
         line = autalities::removeLeadingSpaces(line);
-    } while(isTrue && line.empty());
+    } while (isTrue && line.empty());
     initVariables();
     currentLine = line;
-    if(isTrue) {
-        if(line[0] == '.') {
+    if (isTrue) {
+        if (line[0] == '.') {
             isComment = true;
         } else {
             parse(line);
@@ -36,9 +36,9 @@ bool FreeFormatReader::hasNextLine() {
     return isTrue;
 }
 
-void FreeFormatReader::parse(string & line) {
+void FreeFormatReader::parse(string &line) {
     smatch sm;
-    if(regex_match(line, sm, FREEFORMAT_REGEX0)) {
+    if (regex_match(line, sm, FREEFORMAT_REGEX0)) {
         label = sm[1];
         operation = sm[2];
     } else if (regex_match(line, sm, FREEFORMAT_REGEX1)) {
@@ -55,7 +55,7 @@ void FreeFormatReader::parse(string & line) {
     DirectivseTable *dir = new DirectivseTable();
     label = autalities::tolow(label);
     if (opTable->hasOperation(label) || dir->contains(label)) {
-        if(operand.empty()) {
+        if (operand.empty()) {
             operand = operation;
         } else if (!operation.empty()) {
             operand = operation + " " + operand;

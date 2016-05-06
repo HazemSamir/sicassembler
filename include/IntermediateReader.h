@@ -1,7 +1,7 @@
 #ifndef INTERMEDIATEREADER_H
 #define INTERMEDIATEREADER_H
 
-#include <FreeFormatReader.h>
+#include "FreeFormatReader.h"
 
 
 class IntermediateReader : public FreeFormatReader {

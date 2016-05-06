@@ -1,47 +1,23 @@
-#ifndef PASSONE_H
-#define PASSONE_H
+//
+// Created by Tarek on 5/6/2016.
+//
 
-#ifndef INCLUDES_H
+#ifndef ASSEMBLER_PASSTWO_H
+#define ASSEMBLER_PASSTWO_H
 
 #include "Includes.h"
-
-#endif // INCLUDES_H
-
-#ifndef INPUTREADER_H
-
-#include "InputReader.h"
-
-#endif // INPUTREADER_H
-
-#ifndef READERS_H
-
-#include "FreeFormatReader.h"
-#include "FixedFormatReader.h"
-
-#endif // READERS_H
-
-#ifndef TABELS
-
 #include "OpTable.h"
 #include "DirectivseTable.h"
 #include "SymTable.h"
+#include "InputReader.h"
+#include "IntermediateReader.h"
 
-#endif // TABELS
 
-#ifndef OPERANDVALIDATOR_H
-#include "OperandValidator.h"
-#endif // OPERANDVALIDATOR_H
-
-class PassOne {
+class PassTwo {
 public:
-    PassOne(string fileName, string outputFile);
+    PassTwo(string fileName);
 
-    PassOne(InputReader *reader, string outputFile);
-
-    //virtual ~PassOne();
     void pass();
-
-    SymTable *getSymTable();
 
 private:
     InputReader *input;
@@ -53,6 +29,7 @@ private:
     ofstream outStream;
     DirectivseTable *dirTab;
     int errorCounter = 0;
+    string base = "";
 
     void handelStart(vector<OperandValidator::Operand> args, string &msg);
 
@@ -77,4 +54,5 @@ private:
     void appendToFile(string line);
 };
 
-#endif // PASSONE_H
+
+#endif //ASSEMBLER_PASSTWO_H

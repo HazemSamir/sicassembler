@@ -2,7 +2,7 @@
 
 /** @brief (return symtable)
   */
-SymTable* PassOne::getSymTable() {
+SymTable *PassOne::getSymTable() {
     return symTab;
 }
 
@@ -18,19 +18,19 @@ void PassOne::pass() {
     bool started = false, noStart = true, noEnd = true;
 
     /// loop till end statement or no line remains
-    while(input->hasNextLine()) {
+    while (input->hasNextLine()) {
         /// print line
         outStream << lineNumber << "\t" << autalities::toUp(locator) << "\t";
-        outStream << input->getLine() <<  "\n";
+        outStream << input->getLine() << "\n";
         msg = "";
         // lineNumber++;
-        if(noEnd && !input->isCommentLine()) { // not a comment line
+        if (noEnd && !input->isCommentLine()) { // not a comment line
             /// handel start statement
             string operation = input->getOperation();
             string operand = input->getOperand();
             auto args = input->getArgs(); // operand subfields
 
-            if(operation == "start") {
+            if (operation == "start") {
                 if (!started) {
                     started = true;
                     handelStart(args, msg);
@@ -44,33 +44,33 @@ void PassOne::pass() {
                 }
                 /// handel label and add it to symtable
                 string label = input->getLabel();
-                if(!label.empty()) {
-                    if(symTab->hasLabel(label)) { //duplicate symbol
+                if (!label.empty()) {
+                    if (symTab->hasLabel(label)) { //duplicate symbol
                         addErrorMessage(msg, "Symbol \'" + label + "\' already defined\n");
                     } else {
                         symTab->insert(label, locator);
                     }
                 }
                 /// handel operation and operand field
-                if(args.empty() && !operand.empty()) { // args empty mean error to match it with any operand types
+                if (args.empty() && !operand.empty()) { // args empty mean error to match it with any operand types
                     addErrorMessage(msg, "wrong operand field");
                 }
-                if(!operation.empty()) {
-                    if(opTab->hasOperation(operation)) { // valid operation
+                if (!operation.empty()) {
+                    if (opTab->hasOperation(operation)) { // valid operation
                         handelOperation(args, msg, operation);
-                    } else if(input->isFormatFour()) { // directive with format 4
+                    } else if (input->isFormatFour()) { // directive with format 4
                         addErrorMessage(msg, "invalid format 4 with directives");
-                    } else if(operation == "word") {
+                    } else if (operation == "word") {
                         handelWord(args, msg);
-                    } else if(operation == "resw" || operation == "resb") {
+                    } else if (operation == "resw" || operation == "resb") {
                         handelRes(args, msg, operation);
-                    } else if(operation == "byte") {
+                    } else if (operation == "byte") {
                         handelByte(args, msg);
-                    } else if(operation == "end") {
+                    } else if (operation == "end") {
                         noEnd = false;
-                    } else if(dirTab->contains(operation) && dirTab->notSupported(operation)) {
+                    } else if (dirTab->contains(operation) && dirTab->notSupported(operation)) {
                         addWarningMessage(msg, "not supported directive");
-                    } else if(dirTab->contains(operation)) {
+                    } else if (dirTab->contains(operation)) {
                     } else {
                         addErrorMessage(msg, "invalid operation code");
                     }
@@ -78,18 +78,18 @@ void PassOne::pass() {
                     addErrorMessage(msg, "operation field is messing");
                 }
             }
-            if(!input->isValid())
+            if (!input->isValid())
                 addToMessage(msg, input->getErrorMessage());
             outStream << msg;
         }
         lineNumber++;
     }
-    if(noEnd) {
+    if (noEnd) {
         addErrorMessage(msg, "no end found");
         outStream << msg;
     }
     outStream << "\t\t**********End of pass 1***********\n";
-    if(errorCounter > 0) {
+    if (errorCounter > 0) {
         outStream << ">>> incomplete assembely with " << errorCounter << " errors\n";
     } else {
         printSymTable();
@@ -98,12 +98,12 @@ void PassOne::pass() {
 }
 
 void PassOne::handelStart(vector<OperandValidator::Operand> args, string &msg) {
-    if(args.empty() || !args[0].isHex()) {
+    if (args.empty() || !args[0].isHex()) {
         addErrorMessage(msg, "start must take hex argument");
     } else {
         locator = args[0].operand;
         startingAdress = locator;
-        while(startingAdress.size() < 6) startingAdress = '0' + startingAdress;
+        while (startingAdress.size() < 6) startingAdress = '0' + startingAdress;
         locator = startingAdress;
     }
 }
@@ -112,22 +112,22 @@ void PassOne::handelStart(vector<OperandValidator::Operand> args, string &msg) {
  */
 void PassOne::handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation) {
     int format = opTab->getFormat(operation);
-    if(format == 3 && input->isFormatFour()) format = 4;
-    else if(input->isFormatFour()) {
+    if (format == 3 && input->isFormatFour()) format = 4;
+    else if (input->isFormatFour()) {
         addErrorMessage(msg, "invalid conversion to format 4");
     }
     locator = addToLocator(locator, format);
     int numberOfOperand = opTab->getNumberOfOperands(operation);
     string operandsType = opTab->getOperandsType(operation);
 
-    if(args.size() < numberOfOperand) {
+    if (args.size() < numberOfOperand) {
         addErrorMessage(msg, "messing operands");
         return;
-    } else if(args.size() > numberOfOperand) {
+    } else if (args.size() > numberOfOperand) {
         addWarningMessage(msg, "args more than required for " + operation);
     }
-    for(int i = 0; i < numberOfOperand; ++i) {
-        if(!args[i].ofType(operandsType[i])) {
+    for (int i = 0; i < numberOfOperand; ++i) {
+        if (!args[i].ofType(operandsType[i])) {
             addErrorMessage(msg, operation + " does not support operand type");
             break;
         }
@@ -137,13 +137,13 @@ void PassOne::handelOperation(vector<OperandValidator::Operand> args, string &ms
 /** @brief (handel WORD directive and its operands and update location counter)
  */
 void PassOne::handelWord(vector<OperandValidator::Operand> args, string &msg) {
-    if(args.size() < 1) {
+    if (args.size() < 1) {
         addErrorMessage(msg, "messing valid operand");
         return;
     }
     int i = 0;
-    for(auto arg : args) {
-        if(!arg.isNumber()) {
+    for (auto arg : args) {
+        if (!arg.isNumber()) {
             addErrorMessage(msg, "word supports decimal numeric values only");
             break;
         }
@@ -155,7 +155,7 @@ void PassOne::handelWord(vector<OperandValidator::Operand> args, string &msg) {
 /** @brief (handel BYTE directive and its operands and update location counter)
  */
 void PassOne::handelByte(vector<OperandValidator::Operand> args, string &msg) {
-    if(args.size() < 1) {
+    if (args.size() < 1) {
         addErrorMessage(msg, "messing operand");
         return;
     } else if (args.size() > 1) {
@@ -166,7 +166,7 @@ void PassOne::handelByte(vector<OperandValidator::Operand> args, string &msg) {
         locator = addToLocator(locator, arrSize);
     } else if (args[0].type == OperandValidator::OperandType::XBYTES) {
         int arrSize = args[0].operand.size();
-        if(arrSize % 2)
+        if (arrSize % 2)
             addErrorMessage(msg, "odd length for hex string");
         else
             locator = addToLocator(locator, arrSize / 2);
@@ -178,7 +178,7 @@ void PassOne::handelByte(vector<OperandValidator::Operand> args, string &msg) {
 /** @brief (handel RESW,RESB directive and its operands and update location counter)
  */
 void PassOne::handelRes(vector<OperandValidator::Operand> args, string &msg, string &operation) {
-    if(args.size() < 1) {
+    if (args.size() < 1) {
         addErrorMessage(msg, "messing operand");
         return;
     } else if (args.size() > 1) {
@@ -197,9 +197,9 @@ void PassOne::handelRes(vector<OperandValidator::Operand> args, string &msg, str
  */
 void PassOne::printSymTable() {
     ///Symbol table
-    for(auto x : symTab->getSymtab()) {
+    for (auto x : symTab->getSymtab()) {
         string s = x.first;
-        while(s.size() < 15) {
+        while (s.size() < 15) {
             s += " ";
         }
         s += x.second;
@@ -224,14 +224,14 @@ void PassOne::addErrorMessage(string &msg, string toBeAdded) {
 /** @brief (add new line to message)
  */
 void PassOne::addToMessage(string &msg, string toBeAdded) {
-    if(!toBeAdded.empty()) {
+    if (!toBeAdded.empty()) {
         msg += "****\t\t" + toBeAdded + "\n";
     }
 }
 
 void PassOne::appendToFile(string line) {
     //write to file
-    outStream << line + '\n';
+    outStream << ((line) + '\n');
 }
 
 /** @brief (update location counter)
@@ -240,7 +240,7 @@ string PassOne::addToLocator(string number, int delta) {
     int x = autalities::hexToInteger(number);
     x += delta;
     string temp = autalities::toHex(x);
-    while(temp.size() < 6)temp = '0' + temp;
+    while (temp.size() < 6)temp = '0' + temp;
     return temp;
 }
 
@@ -256,4 +256,4 @@ PassOne::PassOne(InputReader *reader, string outputFile) {
     outStream.open(outputFile, ios_base::out);
 }
 
-PassOne::PassOne(string fileName, string outputFile) : PassOne::PassOne(new FreeFormatReader(fileName), outputFile) {}
+PassOne::PassOne(string fileName, string outputFile) : PassOne::PassOne(new FreeFormatReader(fileName), outputFile) { }
