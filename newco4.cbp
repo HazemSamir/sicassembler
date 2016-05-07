@@ -11,7 +11,7 @@
 				<Option object_output="../sica_build/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="not_exist.txt" />
+				<Option parameters="sicCode.txt" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -38,7 +38,6 @@
 		<Unit filename="OpTable.txt" />
 		<Unit filename="directives.txt" />
 		<Unit filename="include/AssemblerUtalities.h" />
-		<Unit filename="include/Directive.h" />
 		<Unit filename="include/DirectivseTable.h" />
 		<Unit filename="include/FixedFormatReader.h" />
 		<Unit filename="include/FreeFormatReader.h" />
@@ -62,7 +61,6 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/AssemblerUtalities.cpp" />
-		<Unit filename="src/Directive.cpp" />
 		<Unit filename="src/DirectivseTable.cpp" />
 		<Unit filename="src/FixedFormatReader.cpp" />
 		<Unit filename="src/FreeFormatReader.cpp" />
