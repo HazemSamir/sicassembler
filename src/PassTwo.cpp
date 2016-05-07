@@ -80,8 +80,9 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
         string address = autalities::normalize(evaluateOperand(args[0], msg), 1);
         if(numberOfArgs == 2) {
             address += autalities::normalize(evaluateOperand(args[1], msg), 1);
+        } else {
+            address += "0";
         }
-        address = autalities::normalize(address, 2);
         opwriter->writeTextRecord(opCode + address);
     } else {
         locator = addToLocator(locator, format);
