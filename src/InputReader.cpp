@@ -107,6 +107,10 @@ bool InputReader::validateOperation() {
     return false;
 }
 
+void InputReader::close() {
+    in.close();
+}
+
 /** @brief (initalize object string to be empty and boolean variables)
   */
 void InputReader::initVariables() {

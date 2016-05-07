@@ -73,7 +73,7 @@ void dos2unix(string &s) {
  * @brief (convert given +/- string to decimal integer)
  */
 
-int toInteger(const string &txt) {
+int toInteger(string &txt) {
     int x = 0;
     int i = txt.empty() || (txt[0] != '-' && txt[0] != '+') ? 0 : 1;
     int sign = 1;
@@ -93,8 +93,8 @@ int toInteger(const string &txt) {
  * @brief (convert given hex char(0:9 a:f) to decimal integer(0:15))
  */
 
-int hexToInteger(const char c) {
-    int digit = c - '0';
+int hexToInteger(char c) {
+    int digit = tolower(c) - '0';
     return digit + (digit > 9 ? (10 + '0' - 'a') : 0);
 }
 
@@ -105,7 +105,10 @@ int hexToInteger(const char c) {
  * @brief (convert given +/- hex string to decimal integer +/-)
  */
 
-int hexToInteger(const string &txt) {
+int hexToInteger(string &txt) {
+    if(txt.size() == 6 && tolower(txt[0]) == 'f') { // word and negative
+        txt = "ff" + txt;
+    }
     int x = 0;
     for (int i = 0; i < txt.size(); i++) {
         x <<= 4;

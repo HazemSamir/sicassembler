@@ -7,14 +7,13 @@
 const int MAX_PC = 2047, MIN_PC = -2048, MAX_BASE = 4096, MAX_MEMORY = (1 << 20);
 
 PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length) {
-    input = new IntermediateReader(fileName);
+    intermediateFile = fileName;
+    input = new IntermediateReader(intermediateFile);
     opTab = new OpTable();
     symTab = symtabel;
     dirTab = new DirectivseTable();
-    opwriter = new ObjectWriter("op.txt");
-    this->outputFile = outputFile;
+    opwriter = new ObjectWriter(objectFile);
     this -> length = length;
-    // outStream.open(outputFile, ios_base::out);
 }
 
 void PassTwo::pass() {
@@ -47,14 +46,19 @@ void PassTwo::pass() {
                 base = "";
             }
         }
-        // write to log file
         if (errorCounter > 0) {
-            // exit
+            break;
         }
     }
-    opwriter->writeEnd(startingAdress);
-    // write msg to log file
+    input->close();
 
+    opwriter->writeEnd(startingAdress);
+
+    ofstream outStream;
+    outStream.open(intermediateFile, std::ios_base::app | std::ios_base::out);
+    outStream << "\n************* \tpass 2 report *************\n\n";
+    outStream << msg << "\n";
+    outStream.close();
 }
 
 void PassTwo::handelStart(vector<OperandValidator::Operand> args, string label, string &msg) {
@@ -93,7 +97,7 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             int disp = autalities::subtractHex(address, locator);
             if (disp > MAX_PC || disp < MIN_PC) {
                 if(base.empty()) {
-                    addErrorMessage(msg, "displacement is out of bounds and can not use base");
+                    addErrorMessage(msg, "displacement is out of bounds of pc relative - can not use base");
                     return;
                 } else {
                     disp = autalities::subtractHex(address, base);
@@ -137,9 +141,8 @@ void PassTwo::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     opwriter->startNewRecord(addToLocator(locator, args.size() * 3));
 }
 
-
 void PassTwo::addToMessage(string &msg, string toBeAdded) {
-    msg += toBeAdded;
+    msg += "****\t" + toBeAdded + "\n";
 }
 
 string PassTwo::addToLocator(string number, int delta) {
@@ -157,7 +160,8 @@ string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg)
         if (symTab->hasLabel(operand.operand)) {
             return symTab->getLocator(operand.operand);
         } else {
-            addErrorMessage(msg, "undefined sympol");
+            addErrorMessage(msg, "undefined sympol " + operand.operand + " before address " + locator);
+            return "000000";
         }
     } else if (operand.isNumber()) {
         return autalities::intToWord(operand.operand);

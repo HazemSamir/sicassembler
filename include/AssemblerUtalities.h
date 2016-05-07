@@ -21,11 +21,11 @@ void removeTrailingSpaces(string &s);
 
 void dos2unix(string &s);
 
-int toInteger(const string &txt);
+int toInteger(string &txt);
 
-int hexToInteger(const char c);
+int hexToInteger(char c);
 
-int hexToInteger(const string &txt);
+int hexToInteger(string &txt);
 
 char intToHexChar(int d);
 

@@ -46,6 +46,8 @@ public:
 
     string getErrorMessage();
 
+    void close();
+
 protected:
     bool validateLabel();
     bool validateOperation();

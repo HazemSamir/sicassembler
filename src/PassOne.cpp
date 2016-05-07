@@ -96,6 +96,7 @@ void PassOne::pass() {
         printSymTable();
     }
     outStream.close();
+    input->close();
 }
 
 void PassOne::handelStart(vector<OperandValidator::Operand> args, string &msg) {

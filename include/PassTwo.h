@@ -27,12 +27,13 @@ private:
     ObjectWriter *opwriter;
     string startingAdress = "000000";
     string locator = "000000";
-    string outputFile;
     string length;
-    ofstream outStream;
     DirectivseTable *dirTab;
     int errorCounter = 0;
+    int lineCounter = 0;
     string base = "";
+
+    string intermediateFile, objectFile = "op.txt";
 
     void handelStart(vector<OperandValidator::Operand> args, string label, string &msg);
 
