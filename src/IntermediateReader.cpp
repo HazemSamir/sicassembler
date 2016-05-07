@@ -16,7 +16,7 @@ bool IntermediateReader::hasNextLine() {
         if (tmp[0] != '*') {
             ss >> locator;
             getline(ss, line);
-            if (line[0] == '.') {
+            if (locator[0] == '.') {
                 isComment = true;
             } else {
                 parse(line);

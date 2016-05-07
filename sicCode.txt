@@ -1,6 +1,7 @@
 .  copy  8 integers from u to v
 .  loop  index <> 1
 prog     start   0
+.  lda  #6
 bgn      lds     #3
          ldt     #24
          +ldx     #0
