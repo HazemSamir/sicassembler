@@ -14,7 +14,7 @@ PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, 
     opwriter = new ObjectWriter("op.txt");
     this->outputFile = outputFile;
     this -> length = length;
-    outStream.open(outputFile, ios_base::out);
+    // outStream.open(outputFile, ios_base::out);
 }
 
 void PassTwo::pass() {
@@ -22,14 +22,12 @@ void PassTwo::pass() {
 
     /// loop till end statement or no line remains
     while (input->hasNextLine()) {
-        // lineNumber++;
         if (!input->isCommentLine()) { // not a comment line
-            /// handel start statement
             string operation = input->getOperation();
-            string operand = input->getOperand();
             string label = input->getLabel();
-            locator = input->getLocator();
+            string operand = input->getOperand();
             auto args = input->getArgs(); // operand subfields
+            locator = input->getLocator();
 
             if (operation == "start") {
                 handelStart(args, label, msg);
@@ -61,10 +59,11 @@ void PassTwo::pass() {
 
 void PassTwo::handelStart(vector<OperandValidator::Operand> args, string label, string &msg) {
     startingAdress = locator = args[0].operand;
-    opwriter->writeHeader(locator, label, length);
+
     if (label.length() > 6) {
         addErrorMessage(msg, "program name too long");
     }
+    opwriter->writeHeader(locator, label, length);
 }
 
 void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &msg, string &operation,
@@ -74,12 +73,11 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     int format = isFormatFour ? 4 : opTab->getFormat(operation);
     string flags = "000000";
     if(format == 2) {
-        string address = "" + evaluateOperand(args[0], msg).back();
+        string address = autalities::normalize(evaluateOperand(args[0], msg), 1);
         if(numberOfArgs == 2) {
-            address += ("" + evaluateOperand(args[1], msg).back());
-        } else {
-            address += '0';
+            address += autalities::normalize(evaluateOperand(args[1], msg), 1);
         }
+        address = autalities::normalize(address, 2);
         opwriter->writeTextRecord(opCode + address);
     } else {
         locator = addToLocator(locator, format);
@@ -95,12 +93,12 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             int disp = autalities::subtractHex(address, locator);
             if (disp > MAX_PC || disp < MIN_PC) {
                 if(base.empty()) {
-                    addErrorMessage(msg, "");
+                    addErrorMessage(msg, "displacement is out of bounds and can not use base");
                     return;
                 } else {
                     disp = autalities::subtractHex(address, base);
                     if (disp < 0 || disp > MAX_BASE) {
-                        addErrorMessage(msg, "");
+                        addErrorMessage(msg, "displacement is out of bounds for both pc and base");
                         return;
                     }
                 }
@@ -108,19 +106,11 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             } else {
                 flags[4] = '1'; // pc
             }
-            address = autalities::toHex(disp);
-        } else if (format == 4 && autalities::toInteger(address) > MAX_MEMORY) {
+            address = autalities::intToHex(disp);
+        } else if (format == 4 && autalities::hexToInteger(address) > MAX_MEMORY) {
             addErrorMessage(msg, "out of memory bounds");
         }
-        if (format == 3) {
-            while (address.length() > 3) {
-                address.erase(0);
-            }
-        } else if (format == 4) {
-            while (address.length() > 5) {
-                address.erase(0);
-            }
-        }
+        address = autalities::normalize(address, format == 3 ? 3 : 5);
         opwriter->writeTextRecord(opCode, flags, address);
     }
 }
@@ -142,7 +132,7 @@ void PassTwo::handelResb(vector<OperandValidator::Operand> args, string &msg) {
 void PassTwo::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     opwriter->startNewRecord(locator);
     for(auto arg : args) {
-        opwriter->writeTextRecord(autalities::toWord(arg.operand));
+        opwriter->writeTextRecord(autalities::intToWord(arg.operand));
     }
     opwriter->startNewRecord(addToLocator(locator, args.size() * 3));
 }
@@ -153,7 +143,8 @@ void PassTwo::addToMessage(string &msg, string toBeAdded) {
 }
 
 string PassTwo::addToLocator(string number, int delta) {
-    return std::basic_string<char, char_traits<char>, allocator<char>>();
+    int x = autalities::hexToInteger(number);
+    return autalities::intToWord(x + delta); // of size 6
 }
 
 void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
@@ -169,12 +160,9 @@ string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg)
             addErrorMessage(msg, "undefined sympol");
         }
     } else if (operand.isNumber()) {
-        return autalities::toWord(operand.operand);
+        return autalities::intToWord(operand.operand);
     } else if (operand.isLiteral()) {
-        /*if (symTab->hasLabel(operand.operand)) {
-            return symTab->getLocator(operand.operand);
-        } else {
-            addErrorMessage(msg, "");
-        }*/
+        return "00";
     }
+    return "00";
 }

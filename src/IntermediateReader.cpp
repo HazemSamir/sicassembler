@@ -23,7 +23,7 @@ bool IntermediateReader::hasNextLine() {
                 parse(line);
             }
         } else {
-            //comment or warning
+            //error or warning msg
             isComment = true;
         }
     }

@@ -11,36 +11,49 @@ using namespace std;
 
 namespace autalities {
 
-    string tolow(string s);
+string tolow(string s);
 
-    string toUp(string s);
+string toUp(string s);
 
-    void removeTrailingSpaces(string &s);
+string removeLeadingSpaces(string &s);
 
-    string removeLeadingSpaces(string &s);
+void removeTrailingSpaces(string &s);
 
-    void dos2unix(string &s);
+void dos2unix(string &s);
 
-    int toInteger(const string &txt);
+int toInteger(const string &txt);
 
-    int hexToInteger(const string &txt);
+int hexToInteger(const char c);
 
-    int hexToInteger(const char c);
+int hexToInteger(const string &txt);
 
-    char toHexChar(int d);
+char intToHexChar(int d);
 
-    string toByte(string decimal);
+string intToHex(int number);
 
-    string toByte(int decimal);
+string intToHex(int number, int sz);
 
-    string toWord(string decimal);
+string intToBin(int number);
 
-    string toWord(int decimal);
+string intToBin(int number, int sz);
 
-    string toHex(int number);
+int binToInteger(string a);
 
-    int binToInteger(string a);
+int subtractHex(string a, string b);
 
-    int subtractHex(string a, string b);
+string intToByte(int decimal);
+
+string intToByte(string decimal);
+
+string intToWord(int decimal);
+
+string intToWord(string decimal);
+
+string normalize(string s, int sz);
+
+string normalize(string s, int sz, string c);
+
+bool checkLocator(string &text);
+
 }
 #endif // ASSEMBLERUTALITIES_H

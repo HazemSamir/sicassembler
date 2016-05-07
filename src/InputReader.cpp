@@ -4,7 +4,6 @@
   * constractor
   */
 InputReader::InputReader(string fileName) {
-    //dtor
     in.open(fileName);
 }
 
@@ -24,13 +23,13 @@ string InputReader::getOperand() {
 /** @brief (return operation field)
   */
 string InputReader::getOperation() {
-    return autalities::tolow(operation);
+    return operation;
 }
 
 /** @brief (return label field)
   */
 string InputReader::getLabel() {
-    return autalities::tolow(label);
+    return label;
 }
 
 vector<OperandValidator::Operand> InputReader::getArgs() {
@@ -76,6 +75,7 @@ bool InputReader::validateLabel() {
     smatch sm;
     if (regex_match(label, sm, LABEL_REGEX)) {
         label = sm[LABEL_MATCH_INDEX];
+        label = autalities::tolow(label);
         if(!regex_match(label, sm, OperandValidator::RIGESTER_REGEX)) {
             return true;
         } else {
@@ -97,6 +97,7 @@ bool InputReader::validateOperation() {
     smatch sm;
     if (regex_match(operation, sm, OPERATION_REGEX)) {
         operation = sm[OPERATION_MATCH_INDEX];
+        operation = autalities::tolow(operation);
         isFour = (sm[OPERATION_MATCH_INDEX - 1] == "+");
         return true;
     }

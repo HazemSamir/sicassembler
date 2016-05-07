@@ -9,7 +9,6 @@ DirectivseTable::DirectivseTable(string fileName) {
     notSupportedMap["equ"] = true;
     notSupportedMap["ltorg"] = true;
     notSupportedMap["org"] = true;
-    notSupportedMap["nobase"] = true;
 }
 
 bool DirectivseTable::contains(string dir) {

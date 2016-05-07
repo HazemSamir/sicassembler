@@ -64,6 +64,26 @@ vector<string> splitAtComma(string field) {
     return ret;
 }
 
+
+string Operand::stringType() {
+
+}
+
+string Operand::toHex() {
+    string ret = "";
+    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL){
+        return operand;
+    } else if (type == OperandType::CBYTES || type == OperandType::CLITERAL) {
+        for(char c : operand) {
+            ret += autalities::intToByte((int) c);
+        }
+    } else if (isNumber()) {
+        return autalities::intToWord(operand);
+    }
+    return ret;
+}
+
+
 vector<Operand> getOperands(string field) {
     vector<Operand> operandList;
     vector<string> args = splitAtComma(field);
@@ -111,23 +131,4 @@ vector<Operand> getOperands(string field) {
     }
     return operandList;
 }
-
-string Operand::stringType() {
-
-}
-
-string Operand::toHex() {
-    string ret = "";
-    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL){
-        return operand;
-    } else if (type == OperandType::CBYTES || type == OperandType::CLITERAL) {
-        for(char c : operand) {
-            ret += autalities::toByte((int) c);
-        }
-    } else if (isNumber()) {
-        return autalities::toWord(operand);
-    }
-    return ret;
-}
-
 }

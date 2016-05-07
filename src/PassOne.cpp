@@ -239,14 +239,11 @@ void PassOne::appendToFile(string line) {
  */
 string PassOne::addToLocator(string number, int delta) {
     int x = autalities::hexToInteger(number);
-    x += delta;
-    string temp = autalities::toHex(x);
-    while (temp.size() < 6)temp = '0' + temp;
-    return temp;
+    return autalities::intToWord(x + delta); // of size 6
 }
 
 string PassOne::getprogrammLength() {
-    return autalities::toHex(autalities::hexToInteger(locator) - autalities::hexToInteger(startingAdress));
+    return autalities::intToHex(autalities::subtractHex(locator, startingAdress));
 }
 
 int PassOne::getErrorsCounter() {

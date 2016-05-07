@@ -10,24 +10,20 @@ ObjectWriter::ObjectWriter(string fileName) {
 
 void ObjectWriter::writeHeader(string start, string programName, string programLength) {
 	while (programName.length() < 6) {
-		programName = programName + ' ';
+        programName = programName + ' ';
 	}
-	while (start.length() < 6) {
-		start = '0' + start;
-	}
-	while (programLength.length() < 6) {
-		programLength = '0' + programLength;
-	}
-	out << "H" << programName << "^" << start << "^" << programLength << "\n";
+	start = autalities::normalize(start, 6);
+	programLength = autalities::normalize(programLength, 6);
 	startAddress = start;
 	currentRecord = "";
+	out << "H" << programName << SEPARATOR << start << SEPARATOR << programLength << "\n";
 }
 
 void ObjectWriter::writeTextRecord(string opCode, string flags, string address) {
-	int answer = autalities::toInteger(opCode);
+	int answer = autalities::hexToInteger(opCode);
 	answer <<= 4;
 	answer |= autalities::binToInteger(flags);
-	string result = autalities::toHex(answer);
+	string result = autalities::intToHex(answer, 3);
 	result += address;
 	writeTextRecord(result);
 }
@@ -44,38 +40,33 @@ void ObjectWriter::writeTextRecord(string start, string filed) {
 
 void ObjectWriter::writeEnd(string start) {
 	startNewRecord("");
-	out << "E" << start << "\n";
+	out << "E" << autalities::normalize(start,6) << "\n";
+	out.close();
 }
 
 void ObjectWriter::writeTextRecord(string field) {
 	if (currentRecord.length() + field.size() > MAX_RECORD_LENGTH) {
         // write record
-        out << "T" << startAddress << autalities::toByte(currentRecord.length()) << "^";
-        out << currentRecord << "\n";
+        writeTextRecord();
         int previousStart = autalities::hexToInteger(startAddress);
-        startAddress = autalities::toWord(currentRecord.length() + previousStart);
+        startAddress = autalities::intToWord(currentRecord.length() + previousStart);
         currentRecord = "";
 	}
 	currentRecord += field;
 }
 
+void ObjectWriter::writeTextRecord() {
+    if (!currentRecord.empty()) {
+		out << "T" << startAddress << SEPARATOR << autalities::intToByte(currentRecord.length()/2) << SEPARATOR;
+        out << currentRecord << "\n";
+    }
+}
+
 void ObjectWriter::startNewRecord(string start) {
 	//write record
-	if (currentRecord.length() > 0) {
-		out << "T" << startAddress << autalities::toByte(currentRecord.length()) << "^";
-        out << currentRecord << "\n";
+	if (!currentRecord.empty()) {
+		writeTextRecord();
         currentRecord = "";
 	}
 	startAddress = start;
 }
-
-string ObjectWriter::opCodeToHex(string opCode) {
-	int number = autalities::toInteger(opCode);
-	string temp = autalities::toHex(number);
-	temp.pop_back();
-	temp.pop_back();
-	return temp;
-}
-
-
-

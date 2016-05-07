@@ -23,10 +23,3 @@ bool LiteralPool::hasLiteral(string literal) {
 int LiteralPool::getIncrement() {
     return 0;
 }
-
-
-
-
-
-
-
