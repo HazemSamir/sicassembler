@@ -156,13 +156,15 @@ void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
 }
 
 string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
-    if(operand.type == OperandValidator::OperandType::LABEL || operand.type == OperandValidator::OperandType::REGESTER) {
+    if(operand.type == OperandValidator::OperandType::LABEL) {
         if (symTab->hasLabel(operand.operand)) {
             return symTab->getLocator(operand.operand);
         } else {
             addErrorMessage(msg, "undefined sympol " + operand.operand + " before address " + locator);
             return "000000";
         }
+    } else if (operand.type == OperandValidator::OperandType::REGESTER) {
+        return symTab->getRegister(operand.operand);
     } else if (operand.isNumber()) {
         return autalities::intToWord(operand.operand);
     } else if (operand.isLiteral()) {

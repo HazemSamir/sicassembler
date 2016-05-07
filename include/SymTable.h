@@ -22,8 +22,11 @@ public:
         return symTab;
     }
 
+    string getRegister(string r);
+
 private:
     map<string, string> symTab;
+    unordered_map<string, string> registers;
 };
 
 #endif // SYMTABLE_H
