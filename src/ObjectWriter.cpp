@@ -40,6 +40,7 @@ void ObjectWriter::writeTextRecord(string start, string filed) {
 
 void ObjectWriter::writeEnd(string start) {
 	startNewRecord("");
+	writeModificationRecords();
 	out << "E" << autalities::normalize(start,6) << "\n";
 	out.close();
 }
@@ -69,4 +70,14 @@ void ObjectWriter::startNewRecord(string start) {
         currentRecord = "";
 	}
 	startAddress = start;
+}
+
+void ObjectWriter::addModificationRecord(string start) {
+    modification.push_back(autalities::normalize(start, 6) + SEPARATOR + "05");
+}
+
+void ObjectWriter::writeModificationRecords() {
+    for(auto mod : modification) {
+        out << "M" << mod << "\n";
+    }
 }

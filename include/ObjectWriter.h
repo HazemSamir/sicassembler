@@ -70,10 +70,22 @@ public:
      */
     void startNewRecord(string start);
 
+
+    /**
+     * @brief : add to modification record list
+     * @param : start
+                     start address of the modification record of format 4 address
+                     relative to start of the program
+     */
+    void addModificationRecord(string start);
+
 private:
 	ofstream out;
 	string currentRecord;
 	string startAddress = "0000000";
+	vector<string> modification;
+
+	void writeModificationRecords();
 };
 
 
