@@ -10,6 +10,7 @@
 
 void runPass1(bool isFixed, string sourceName, string outputName) {
     PassOne *p;
+    cout << "intermediate file: \"" << outputName << "\"" << endl;
     if(isFixed) {
         p = new PassOne(new FixedFormatReader(sourceName), outputName);
     } else {
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
     string source(sourcePath);
     string output;
     if (outputPath == NULL) {
-        output = "list_" + source;
+        output = source + "_list.txt";
     } else {
         output = *(new string(outputPath));
     }
