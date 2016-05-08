@@ -80,12 +80,12 @@ public:
     void addModificationRecord(string start);
 
 private:
-	ofstream out;
-	string currentRecord;
-	string startAddress = "0000000";
-	vector<string> modification;
+    ofstream out;
+    string currentRecord;
+    string startAddress = "0000000";
+    vector<string> modification;
 
-	void writeModificationRecords();
+    void writeModificationRecords();
 };
 
 

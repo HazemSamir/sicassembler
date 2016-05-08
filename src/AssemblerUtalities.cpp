@@ -138,7 +138,7 @@ char intToHexChar(int d) {
 string intToHex(int number) {
     int msk = 0b1111;
     string hex = "";
-    for(int i = 0; i < 6; ++i){
+    for(int i = 0; i < 6; ++i) {
         hex += intToHexChar(number & msk);
         number >>= 4;
     }
@@ -167,13 +167,13 @@ string intToHex(int number, int sz) {
  * use it if you don't care about the size of string
  */
 string intToBin(int number) {
-	string ans = "";
-	while (number > 0) {
-		ans += (number % 2) ? "1" : "0";
-		number /= 2;
-	}
-	reverse(ans.begin(), ans.end());
-	return ans;
+    string ans = "";
+    while (number > 0) {
+        ans += (number % 2) ? "1" : "0";
+        number /= 2;
+    }
+    reverse(ans.begin(), ans.end());
+    return ans;
 }
 
 /**
@@ -197,12 +197,12 @@ string intToBin(int number, int sz) {
  * @brief (convert given binary string to integer)
  */
 int binToInteger(string a) {
-	int answer = 0;
-	for (int i = 0; i < a.length(); ++i) {
-		answer <<= 1;
-		answer |= (a[i] - '0');
-	}
-	return answer;
+    int answer = 0;
+    for (int i = 0; i < a.length(); ++i) {
+        answer <<= 1;
+        answer |= (a[i] - '0');
+    }
+    return answer;
 }
 
 /**

@@ -5,27 +5,27 @@
 #include "ObjectWriter.h"
 
 ObjectWriter::ObjectWriter(string fileName) {
-	out.open(fileName);
+    out.open(fileName);
 }
 
 void ObjectWriter::writeHeader(string start, string programName, string programLength) {
-	while (programName.length() < 6) {
+    while (programName.length() < 6) {
         programName = programName + ' ';
-	}
-	start = autalities::normalize(start, 6);
-	programLength = autalities::normalize(programLength, 6);
-	startAddress = start;
-	currentRecord = "";
-	out << "H" << programName << SEPARATOR << start << SEPARATOR << programLength << "\n";
+    }
+    start = autalities::normalize(start, 6);
+    programLength = autalities::normalize(programLength, 6);
+    startAddress = start;
+    currentRecord = "";
+    out << "H" << programName << SEPARATOR << start << SEPARATOR << programLength << "\n";
 }
 
 void ObjectWriter::writeTextRecord(string opCode, string flags, string address) {
-	int answer = autalities::hexToInteger(opCode);
-	answer <<= 4;
-	answer |= autalities::binToInteger(flags);
-	string result = autalities::intToHex(answer, 3);
-	result += address;
-	writeTextRecord(result);
+    int answer = autalities::hexToInteger(opCode);
+    answer <<= 4;
+    answer |= autalities::binToInteger(flags);
+    string result = autalities::intToHex(answer, 3);
+    result += address;
+    writeTextRecord(result);
 }
 
 void ObjectWriter::writeTextRecord(string start, string opCode, string flags, string address) {
@@ -39,37 +39,37 @@ void ObjectWriter::writeTextRecord(string start, string filed) {
 }
 
 void ObjectWriter::writeEnd(string start) {
-	startNewRecord("");
-	writeModificationRecords();
-	out << "E" << autalities::normalize(start,6) << "\n";
-	out.close();
+    startNewRecord("");
+    writeModificationRecords();
+    out << "E" << autalities::normalize(start, 6) << "\n";
+    out.close();
 }
 
 void ObjectWriter::writeTextRecord(string field) {
-	if (currentRecord.length() + field.size() > MAX_RECORD_LENGTH) {
+    if (currentRecord.length() + field.size() > MAX_RECORD_LENGTH) {
         // write record
         writeTextRecord();
         int previousStart = autalities::hexToInteger(startAddress);
         startAddress = autalities::intToWord(currentRecord.length() + previousStart);
         currentRecord = "";
-	}
-	currentRecord += field;
+    }
+    currentRecord += field;
 }
 
 void ObjectWriter::writeTextRecord() {
     if (!currentRecord.empty()) {
-		out << "T" << startAddress << SEPARATOR << autalities::intToByte(currentRecord.length()/2) << SEPARATOR;
+        out << "T" << startAddress << SEPARATOR << autalities::intToByte(currentRecord.length() / 2) << SEPARATOR;
         out << currentRecord << "\n";
     }
 }
 
 void ObjectWriter::startNewRecord(string start) {
-	//write record
-	if (!currentRecord.empty()) {
-		writeTextRecord();
+    //write record
+    if (!currentRecord.empty()) {
+        writeTextRecord();
         currentRecord = "";
-	}
-	startAddress = start;
+    }
+    startAddress = start;
 }
 
 void ObjectWriter::addModificationRecord(string start) {
