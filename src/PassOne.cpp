@@ -69,10 +69,15 @@ void PassOne::pass() {
                         handelByte(args, msg);
                     } else if (operation == "end") {
                         noEnd = false;
+                    } else if (operation == "org") {
+                        handelOrg(args, msg);
+                    } else if (operation == "equ") {
+                        handelEqu(args, label, msg);
+                    } else if (operation == "ltorg") {
+                        handelLtorg(msg);
                     } else if (dirTab->contains(operation) && dirTab->notSupported(operation)) {
                         addWarningMessage(msg, "not supported directive");
-                    } else if (dirTab->contains(operation)) {
-                    } else {
+                    } else if (!dirTab->contains(operation)) {
                         addErrorMessage(msg, "invalid operation code");
                     }
                 } else {
@@ -195,6 +200,42 @@ void PassOne::handelRes(vector<OperandValidator::Operand> args, string &msg, str
     }
 }
 
+void PassOne::handelOrg(vector<OperandValidator::Operand> args, string &msg) {
+    if(args.size() == 0 && !tmpLocator.empty()) {
+        locator = tmpLocator;
+        tmpLocator = "";
+    } else if (args.size() == 1) {
+        Sympol evaluated = OperandValidator::evaluateExpression(args[0], locator, symTab);
+        if (evaluated.value.empty()) {
+            addErrorMessage(msg, "not valid expression");
+        } else if (evaluated.isAbs) {
+            addErrorMessage(msg, "org must have a realocatable address");
+        } else {
+            tmpLocator = locator;
+            locator = evaluated.value;
+        }
+    } else {
+        addErrorMessage(msg, "org must take zero or one operand");
+    }
+}
+
+void PassOne::handelEqu(vector<OperandValidator::Operand> args, string label, string &msg) {
+    if (args.size() == 1) {
+        Sympol evaluated = OperandValidator::evaluateExpression(args[0], locator, symTab);
+        if (evaluated.value.empty()) {
+            addErrorMessage(msg, "not valid expression");
+        } else if (!label.empty()) {
+            symTab->insert(label, evaluated);
+        }
+    } else {
+        addErrorMessage(msg, "equ must take one operand");
+    }
+}
+
+void PassOne::handelLtorg(string &msg) {
+
+}
+
 /** @brief (print symtable contents to output stream after success assemble)
  */
 void PassOne::printSymTable() {
@@ -204,7 +245,7 @@ void PassOne::printSymTable() {
         while (s.size() < 15) {
             s += " ";
         }
-        s += x.second;
+        s += x.second.value + "\t" + (x.second.isAbs ? "absolute" : "realocatable");
         outStream << "****\t\t" << s << "\n";
     }
 }

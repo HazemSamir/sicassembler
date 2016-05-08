@@ -1,5 +1,7 @@
 #include "SymTable.h"
 
+
+
 /** @brief (empty constructor)
   */
 SymTable::SymTable() {
@@ -22,8 +24,12 @@ string SymTable::getLocator(string label) {
 
 /** @brief (insert label and its location counter)
   */
-void SymTable::insert(string label, string locator) {
-    symTab[label] = locator;
+void SymTable::insert(string label, string locator, bool isAbs) {
+    insert(label, Sympol(locator, isAbs));
+}
+
+void SymTable::insert(string label, Sympol symp) {
+    symTab[label] = symp;
 }
 
 /** @brief (return true if it contains the given label)

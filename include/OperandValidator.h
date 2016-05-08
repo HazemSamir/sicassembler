@@ -5,6 +5,8 @@
 #include "Includes.h"
 #endif // INCLUDES_H
 
+#include "SymTable.h"
+
 #ifndef ASSEMBLERUTALITIES_H
 #include "AssemblerUtalities.h"
 #endif // ASSEMBLERUTALITIES_H
@@ -65,6 +67,10 @@ public:
 };
 
 vector<Operand> getOperands(string field);
+
+    vector<Operand> getOperands(vector<string> args);
+
+Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab);
 
 }
 #endif // OPERANDVALIDATOR_H

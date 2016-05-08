@@ -66,12 +66,12 @@ vector<string> splitAtComma(string field) {
 
 
 string Operand::stringType() {
-
+    return "";
 }
 
 string Operand::toHex() {
     string ret = "";
-    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL){
+    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL) {
         return operand;
     } else if (type == OperandType::CBYTES || type == OperandType::CLITERAL) {
         for(char c : operand) {
@@ -83,10 +83,26 @@ string Operand::toHex() {
     return ret;
 }
 
+/** @brief (evaluate expression and return its hex value and type (absolute or realocatble))
+  * @return
+  *        Sympol object if there is an error then return empty string
+  */
+
+Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab) {
+    smatch sm;
+    Sympol symp;
+    if(regex_match(expression.operand, sm, EXPERSION_REGEX)) {
+        vector<string> terms;
+    }
+    return symp;
+}
 
 vector<Operand> getOperands(string field) {
+    return getOperands(splitAtComma(field));
+}
+
+vector<Operand> getOperands(vector<string> args) {
     vector<Operand> operandList;
-    vector<string> args = splitAtComma(field);
     for(string arg : args) {
         Operand tmp;
         tmp.operand = autalities::tolow(arg);
@@ -119,6 +135,7 @@ vector<Operand> getOperands(string field) {
             tmp.type = OperandType::HEX;
         } else if(regex_match(arg, EXPERSION_REGEX)) {
             tmp.type = OperandType::EXPRESION;
+            tmp.operand = autalities::tolow(sm[0]);
         }
         if(tmp.type == OperandType::REGESTER
                 && tmp.operand == "x"
@@ -131,4 +148,5 @@ vector<Operand> getOperands(string field) {
     }
     return operandList;
 }
+
 }

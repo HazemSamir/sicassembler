@@ -52,7 +52,7 @@ private:
     OpTable *opTab;
     SymTable *symTab;
     string startingAdress = "000000";
-    string locator = "000000";
+    string locator = "000000", tmpLocator = "";
     string outputFile;
     ofstream outStream;
     DirectivseTable *dirTab;
@@ -67,6 +67,12 @@ private:
     void handelByte(vector<OperandValidator::Operand> args, string &msg);
 
     void handelRes(vector<OperandValidator::Operand> args, string &msg, string &operation);
+
+    void handelOrg(vector<OperandValidator::Operand> args, string &msg);
+
+    void handelEqu(vector<OperandValidator::Operand> args, string label, string &msg);
+
+    void handelLtorg(string &msg);
 
     void addToMessage(string &msg, string toBeAdded);
 

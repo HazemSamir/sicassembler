@@ -44,7 +44,7 @@ void PassTwo::pass() {
                 base = args[0].operand;
             } else if (operation == "nobase") {
                 base = "";
-            }
+            } // no other check or error as it passes pass 1
         }
         if (errorCounter > 0) {
             break;
@@ -94,6 +94,10 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
         flags[2] = args[0].isIndexed ? '1' : '0';
         flags[5] = isFormatFour ? '1' : '0';
         string address = evaluateOperand(args[0], msg);
+        if(address.empty()) {
+            addErrorMessage(msg, "error in evaluate operand");
+            return;
+        }
         if (!args[0].isImmediate && format == 3) {
             int disp = autalities::subtractHex(address, locator);
             if (disp > MAX_PC || disp < MIN_PC) {
@@ -156,6 +160,10 @@ void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
     addToMessage(msg, "error: " + toBeAdded);
 }
 
+/**
+  * return empty string if there is an error
+  */
+
 string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
     if(operand.type == OperandValidator::OperandType::LABEL) {
         if (symTab->hasLabel(operand.operand)) {
@@ -170,6 +178,8 @@ string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg)
         return autalities::intToWord(operand.operand);
     } else if (operand.isLiteral()) {
         return "00";
+    } else if (operand.type == OperandValidator::OperandType::EXPRESION) {
+        return OperandValidator::evaluateExpression(operand, locator, symTab).value;
     }
-    return "00";
+    return "";
 }
