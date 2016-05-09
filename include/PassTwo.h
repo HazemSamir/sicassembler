@@ -47,13 +47,15 @@ private:
 
     void handelResb(vector<OperandValidator::Operand> args, string &msg);
 
+    void handelBase(vector<OperandValidator::Operand> args, string &msg);
+
     void addToMessage(string &msg, string toBeAdded);
 
     void addErrorMessage(string &msg, string toBeAdded);
 
     string addToLocator(string number, int delta);
 
-    string evaluateOperand(OperandValidator::Operand &operand, string &msg);
+    Sympol evaluateOperand(OperandValidator::Operand &operand, string &msg);
 
 };
 

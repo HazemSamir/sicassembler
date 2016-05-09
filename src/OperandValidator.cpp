@@ -52,14 +52,14 @@ string Operand::stringType() {
 
 string Operand::toHex() {
     string ret = "";
-    if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL) {
+    if (isNumber()) {
+        return autalities::intToWord(operand);
+    } else if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL) {
         return operand;
     } else if (type == OperandType::CBYTES || type == OperandType::CLITERAL) {
         for(char c : operand) {
             ret += autalities::intToByte((int) c);
         }
-    } else if (isNumber()) {
-        return autalities::intToWord(operand);
     }
     return ret;
 }
@@ -120,7 +120,7 @@ Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab) 
     if(regex_match(expression.operand, matcher, EXPERSION_REGEX)) {
         vector<string> terms = {matcher[1]};
         //expression ex: 100 - 50
-        if (matcher.size() > 2) {
+        if(matcher.size() >= 4 && matcher[3] != "") {
             terms.push_back(matcher[3]);
             terms.push_back(matcher[4]);
         }

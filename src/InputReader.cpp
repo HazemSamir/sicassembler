@@ -96,9 +96,9 @@ bool InputReader::validateLabel() {
 bool InputReader::validateOperation() {
     smatch sm;
     if (regex_match(operation, sm, OPERATION_REGEX)) {
-        operation = sm[OPERATION_MATCH_INDEX];
+        isFour = (sm[1] == "+");
+        operation = sm[2];
         operation = autalities::tolow(operation);
-        isFour = (sm[OPERATION_MATCH_INDEX - 1] == "+");
         return true;
     }
     operation = "";

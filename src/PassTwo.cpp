@@ -41,12 +41,13 @@ void PassTwo::pass() {
             } else if (operation == "resb") {
                 handelResb(args, msg);
             } else if (operation == "base") {
-                base = args[0].operand;
+                handelBase(args, msg);
             } else if (operation == "nobase") {
                 base = "";
             } // no other check or error as it passes pass 1
         }
         if (errorCounter > 0) {
+            addToMessage(msg, input->getLine());
             break;
         }
     }
@@ -76,51 +77,63 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     int numberOfArgs = opTab->getNumberOfOperands(operation);
     int format = isFormatFour ? 4 : opTab->getFormat(operation);
     string flags = "000000";
-    if(format == 2) {
-        string address = autalities::normalize(evaluateOperand(args[0], msg).value, 1);
-        if(numberOfArgs == 2) {
-            address += autalities::normalize(evaluateOperand(args[1], msg).value, 1);
-        } else {
-            address += "0";
-        }
-        opwriter->writeTextRecord(opCode + address);
-    } else {
-        flags[0] = args[0].isInDirect ? '1' : '0';
-        flags[1] = args[0].isImmediate ? '1' : '0';
-        if (!args[0].isInDirect && !args[0].isImmediate) {
-            flags[0] = flags[1] = '1';
-        }
-        flags[2] = args[0].isIndexed ? '1' : '0';
-        flags[5] = isFormatFour ? '1' : '0';
-        Symbol address = evaluateOperand(args[0], msg);
-        if(address.value.empty()) {
-            addErrorMessage(msg, "error in operand evaluation");
-            return;
-        }
-        if (!address.isAbs && format == 3) {
-            locator = addToLocator(locator, format); // for correct displacement calculations
-            int disp = autalities::subtractHex(address.value, locator);
-            if (disp > MAX_PC || disp < MIN_PC) {
-                if(base.empty()) {
-                    addErrorMessage(msg, "displacement is out of bounds of pc relative - can not use base");
-                    return;
-                } else {
-                    disp = autalities::subtractHex(address.value, base);
-                    if (disp < 0 || disp > MAX_BASE) {
-                        addErrorMessage(msg, "displacement is out of bounds for both pc and base");
-                        return;
-                    }
-                }
-                flags[3] = '1'; // base
+    if(numberOfArgs) {
+        if(format == 2) {
+            string address = autalities::normalize(evaluateOperand(args[0], msg).value, 1);
+            if(numberOfArgs == 2) {
+                address += autalities::normalize(evaluateOperand(args[1], msg).value, 1);
             } else {
-                flags[4] = '1'; // pc
+                address += "0";
             }
-            address.value = autalities::intToHex(disp);
-        } else if (format == 4 && autalities::hexToInteger(address.value) > MAX_MEMORY) {
-            addErrorMessage(msg, "out of memory bounds");
+            opwriter->writeTextRecord(opCode + address);
+        } else {
+            flags[0] = args[0].isInDirect ? '1' : '0';
+            flags[1] = args[0].isImmediate ? '1' : '0';
+            if (!args[0].isInDirect && !args[0].isImmediate) {
+                flags[0] = flags[1] = '1';
+            }
+            flags[2] = args[0].isIndexed ? '1' : '0';
+            flags[5] = isFormatFour ? '1' : '0';
+            Sympol address = evaluateOperand(args[0], msg);
+            if(address.value.empty()) {
+                addErrorMessage(msg, "error in operand evaluation");
+                return;
+            }
+            if (!address.isAbs && format == 3) {
+                locator = addToLocator(locator, format); // for correct displacement calculations
+                int disp = autalities::subtractHex(address.value, locator);
+                if (disp > MAX_PC || disp < MIN_PC) {
+                    cout << "base: " + base << "\n";
+                    if(base.empty()) {
+                        addErrorMessage(msg, "displacement is out of bounds of pc relative - can not use base");
+                        return;
+                    } else {
+                        disp = autalities::subtractHex(address.value, base);
+                        if (disp < 0 || disp > MAX_BASE) {
+                            addErrorMessage(msg, "displacement is out of bounds for both pc and base");
+                            return;
+                        }
+                    }
+                    flags[3] = '1'; // base
+                } else {
+                    flags[4] = '1'; // pc
+                }
+                address.value = autalities::intToHex(disp);
+            } else if (format == 4 && autalities::hexToInteger(address.value) > MAX_MEMORY) {
+                addErrorMessage(msg, "out of memory bounds");
+            }
+            address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
+            opwriter->writeTextRecord(opCode, flags, address.value);
         }
-        address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
-        opwriter->writeTextRecord(opCode, flags, address.value);
+    } else {
+        if(format == 4) {
+            opwriter->writeTextRecord(opCode, "110001", "00000");
+        } else if (format == 3){
+            opwriter->writeTextRecord(opCode, "110000", "000");
+        } else {
+            opwriter->writeTextRecord(opCode + "00");
+        }
+
     }
 }
 
@@ -146,6 +159,19 @@ void PassTwo::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     opwriter->startNewRecord(addToLocator(locator, args.size() * 3));
 }
 
+void PassTwo::handelBase(vector<OperandValidator::Operand> args, string &msg) {
+    if(args.size() == 1) {
+        Sympol symp = evaluateOperand(args[0], msg);
+        if(symp.value.empty()) {
+            addErrorMessage(msg, "error in evaluating the operand");
+        } else {
+            base = symp.value;
+        }
+    } else {
+        addErrorMessage(msg, "base must take one argument");
+    }
+}
+
 void PassTwo::addToMessage(string &msg, string toBeAdded) {
     msg += "****\t" + toBeAdded + "\n";
 }
@@ -164,8 +190,8 @@ void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
   * return empty string if there is an error
   */
 
-Symbol PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
-    Symbol result;
+Sympol PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
+    Sympol result;
     if (operand.operand == "*") {
         result.value = locator;
         result.isAbs = false;
