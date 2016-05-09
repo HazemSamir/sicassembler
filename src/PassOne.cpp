@@ -241,12 +241,10 @@ void PassOne::handelLtorg(string &msg) {
 void PassOne::printSymTable() {
     ///Symbol table
     for (auto x : symTab->getSymtab()) {
-        string s = x.first;
-        while (s.size() < 15) {
-            s += " ";
-        }
-        s += x.second.value + "\t" + (x.second.isAbs ? "absolute" : "realocatable");
-        outStream << "****\t\t" << s << "\n";
+        char line[500];
+        sprintf(line, "****\t\t%-20s%-10s%-15s\n", x.first.c_str(), x.second.value.c_str(), (x.second.isAbs ? "absolute" : "realocatable"));
+        outStream << line;
+        cout << line;
     }
 }
 

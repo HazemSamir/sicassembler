@@ -85,7 +85,6 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
         }
         opwriter->writeTextRecord(opCode + address);
     } else {
-        locator = addToLocator(locator, format);
         flags[0] = args[0].isInDirect ? '1' : '0';
         flags[1] = args[0].isImmediate ? '1' : '0';
         if (!args[0].isInDirect && !args[0].isImmediate) {
@@ -95,10 +94,11 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
         flags[5] = isFormatFour ? '1' : '0';
         string address = evaluateOperand(args[0], msg);
         if(address.empty()) {
-            addErrorMessage(msg, "error in evaluate operand");
+            addErrorMessage(msg, "error in operand evaluation");
             return;
         }
         if (!args[0].isImmediate && format == 3) {
+            locator = addToLocator(locator, format); // for correct displacement calculations
             int disp = autalities::subtractHex(address, locator);
             if (disp > MAX_PC || disp < MIN_PC) {
                 if(base.empty()) {

@@ -1,16 +1,27 @@
-.23456789012345678901234567890
-progr1   start   0000
-P        LDA     Z
-         SUB     Y
-         STA     BETA
-         LDA     V
-         ADD     W
-         DIV     BETA
-         STA     E
-         J       *
-Z        WORD    9
-Y        WORD    4
-BETA     RESW    1
-V        WORD    5
-E        RESW    1
-         END     P
+.  copy  8 integers from u to v
+.  loop  index <> 1
+prog     start   0
+.  lda  #6
+bgn      lds     #3
+         ldt     #24
+         +ldx     #0
+   loop     lDa     u,x
+         sta     v,x
+                  addr    s,x
+    label1  equ loop -bgn
+HAMada     compr                x,t
+   label2 equ      hamada + label1
+  label3    equ      hamada-label1
+         jlt                *-10
+         j       *
+.
+         .   list of values for u
+u                    word    1,2,3
+         word            4
+                 word    5
+         word    6
+                   word        7
+         word    8
+.   array to store results
+v        resw         100
+                     end

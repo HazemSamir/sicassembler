@@ -5,6 +5,10 @@
 #include "Includes.h"
 #endif // INCLUDES_H
 
+#ifndef ASSEMBLERUTALITIES_H
+#include "AssemblerUtalities.h"
+#endif // ASSEMBLERUTALITIES_H
+
 class Sympol {
 
 public:
@@ -13,14 +17,16 @@ public:
     string value = "";
     bool isAbs = false;
 
-    Sympol Sympol::operator += (const Sympol b) {
+    Sympol operator += (const Sympol b) {
         value = autalities::addHex(value, b.value);
         isAbs = (isAbs and b.isAbs);
+        return *(this);
     }
 
-    Sympol Sympol::operator -= (const Sympol b){
+    Sympol operator -= (const Sympol b){
         value = autalities::intToHex(autalities::subtractHex(value, b.value));
         isAbs = ((isAbs and b.isAbs) or (!isAbs and !b.isAbs));
+        return *(this);
     }
 
     friend Sympol operator + (Sympol a, const Sympol b) {

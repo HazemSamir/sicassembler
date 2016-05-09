@@ -84,6 +84,13 @@ vector<string> splitAtComma(string field) {
     return ret;
 }
 
+/** @brief (split given expression at operators(+,-))
+  * @return
+  *        vector of splited strings
+  *
+  * eg: 12+ alpha-100 + 20 -> {"12", "+", "alpha", "-", "100", "+", "20"}
+  */
+
 vector<string> splitExpression(string expression) {
     vector<string> terms;
     int splits = count(expression.begin(), expression.end(), '+')
@@ -93,8 +100,11 @@ vector<string> splitExpression(string expression) {
     regex expressionRegex(regexString, regex_constants::ECMAScript);
     smatch sm;
     regex_match(expression, sm, expressionRegex);
+    bool flag = false;
     for(string term : sm){
-        terms.push_back(term);
+        if(flag)
+            terms.push_back(term);
+        flag = true;
     }
     return terms;
 }
@@ -195,7 +205,6 @@ Operand toOperand(string arg) {
             tmp.type = OperandType::HEX;
         } else if(regex_match(arg, EXPERSION_REGEX)) {
             tmp.type = OperandType::EXPRESION;
-            tmp.operand = autalities::tolow(sm[0]);
         }
     return tmp;
 }
