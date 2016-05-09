@@ -1,7 +1,5 @@
 #include "SymTable.h"
 
-
-
 /** @brief (empty constructor)
   */
 SymTable::SymTable() {
@@ -19,7 +17,7 @@ SymTable::SymTable() {
 /** @brief (return location counter of the given lable)
   */
 string SymTable::getLocator(string label) {
-    return registers[label];
+    return getSympol(label).value;
 }
 
 /** @brief (insert label and its location counter)
@@ -36,6 +34,14 @@ void SymTable::insert(string label, Sympol symp) {
   */
 bool SymTable::hasLabel(string label) {
     return symTab.find(label) != symTab.end();
+}
+
+Sympol SymTable::getSympol(string label) {
+    auto it = symTab.find(label);
+    if (it != symTab.end()) {
+        return it->second;
+    }
+    return Sympol();
 }
 
 string SymTable::getRegister(string r) {

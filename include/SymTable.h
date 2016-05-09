@@ -12,6 +12,26 @@ public:
     Sympol(string val, bool isAbsl) : value{val}, isAbs{isAbsl} {}
     string value = "";
     bool isAbs = false;
+
+    Sympol Sympol::operator += (const Sympol b) {
+        value = autalities::addHex(value, b.value);
+        isAbs = (isAbs and b.isAbs);
+    }
+
+    Sympol Sympol::operator -= (const Sympol b){
+        value = autalities::intToHex(autalities::subtractHex(value, b.value));
+        isAbs = ((isAbs and b.isAbs) or (!isAbs and !b.isAbs));
+    }
+
+    friend Sympol operator + (Sympol a, const Sympol b) {
+        a += b;
+        return a;
+    }
+
+    friend Sympol operator - (Sympol a, const Sympol b) {
+        a -= b;
+        return a;
+    }
 };
 
 class SymTable {
@@ -28,6 +48,8 @@ public:
     bool isAbsolute(string label);
 
     bool hasLabel(string label);
+
+    Sympol getSympol(string label);
 
     unordered_map<string, Sympol> getSymtab() {
         return symTab;
