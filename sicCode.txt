@@ -9,6 +9,12 @@ FIRST    STL     RETADR
 CLOOP   +JSUB    RDREC
          LDA     LENGTH
          COMP    #0
+VAR      EQU     -10*90
+VAR1     EQU     10*-90
+VAR2     EQU     -10*-90
+VAR3     EQU     -10 * -90
+VAR4     EQU     *+-10
+VAR5     EQU     *-*
          JEQ     ENDFIL
         +JSUB    WRREC
          J       CLOOP
