@@ -47,6 +47,7 @@ public:
 
     int getErrorsCounter();
 
+
 private:
     InputReader *input;
     OpTable *opTab;

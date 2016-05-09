@@ -116,18 +116,28 @@ vector<string> splitExpression(string expression) {
 
 Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab) {
     Sympol emptySymp, res;
-    if(regex_match(expression.operand, EXPERSION_REGEX)) {
-        vector<string> terms = splitExpression(expression.operand);
+    smatch matcher;
+    if(regex_match(expression.operand, matcher, EXPERSION_REGEX)) {
+        vector<string> terms = {matcher[1]};
+        //expression ex: 100 - 50
+        if (matcher.size() > 2) {
+            terms.push_back(matcher[3]);
+            terms.push_back(matcher[4]);
+        }
         res = toSympol(terms[0], locator, symTab);
-        for(int i = 2; i < terms.size(); i += 2) {
-            Sympol operand2 = toSympol(terms[i], locator, symTab);
+        if (terms.size() > 1 && !(res.value.empty())) {
+            Sympol operand2 = toSympol(terms[2], locator, symTab);
             if(operand2.value.empty()){ // error in evaluating this term
                 return emptySymp;
             }
-            if(terms[i-1] == "+") {
+            if(terms[1] == "+" && (res.isAbs || operand2.isAbs)) {
                 res += operand2;
-            } else if (terms[i-1] == "-") {
+            } else if (terms[1] == "-" && (!res.isAbs || operand2.isAbs)) {
                 res -= operand2;
+            } else if (terms[1] == "*" && (operand2.isAbs && res.isAbs)) {
+                res *= operand2;
+            } else if (terms[1] == "/" && (operand2.isAbs && res.isAbs)) {
+                res /= operand2;
             } else { // error not supported operator
                 return emptySymp;
             }

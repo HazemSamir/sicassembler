@@ -77,9 +77,9 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
     int format = isFormatFour ? 4 : opTab->getFormat(operation);
     string flags = "000000";
     if(format == 2) {
-        string address = autalities::normalize(evaluateOperand(args[0], msg), 1);
+        string address = autalities::normalize(evaluateOperand(args[0], msg).value, 1);
         if(numberOfArgs == 2) {
-            address += autalities::normalize(evaluateOperand(args[1], msg), 1);
+            address += autalities::normalize(evaluateOperand(args[1], msg).value, 1);
         } else {
             address += "0";
         }
@@ -92,20 +92,20 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
         }
         flags[2] = args[0].isIndexed ? '1' : '0';
         flags[5] = isFormatFour ? '1' : '0';
-        string address = evaluateOperand(args[0], msg);
-        if(address.empty()) {
+        Symbol address = evaluateOperand(args[0], msg);
+        if(address.value.empty()) {
             addErrorMessage(msg, "error in operand evaluation");
             return;
         }
-        if (!args[0].isImmediate && format == 3) {
+        if (!address.isAbs && format == 3) {
             locator = addToLocator(locator, format); // for correct displacement calculations
-            int disp = autalities::subtractHex(address, locator);
+            int disp = autalities::subtractHex(address.value, locator);
             if (disp > MAX_PC || disp < MIN_PC) {
                 if(base.empty()) {
                     addErrorMessage(msg, "displacement is out of bounds of pc relative - can not use base");
                     return;
                 } else {
-                    disp = autalities::subtractHex(address, base);
+                    disp = autalities::subtractHex(address.value, base);
                     if (disp < 0 || disp > MAX_BASE) {
                         addErrorMessage(msg, "displacement is out of bounds for both pc and base");
                         return;
@@ -115,12 +115,12 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             } else {
                 flags[4] = '1'; // pc
             }
-            address = autalities::intToHex(disp);
-        } else if (format == 4 && autalities::hexToInteger(address) > MAX_MEMORY) {
+            address.value = autalities::intToHex(disp);
+        } else if (format == 4 && autalities::hexToInteger(address.value) > MAX_MEMORY) {
             addErrorMessage(msg, "out of memory bounds");
         }
-        address = autalities::normalize(address, format == 3 ? 3 : 5);
-        opwriter->writeTextRecord(opCode, flags, address);
+        address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
+        opwriter->writeTextRecord(opCode, flags, address.value);
     }
 }
 
@@ -164,22 +164,28 @@ void PassTwo::addErrorMessage(string &msg, string toBeAdded) {
   * return empty string if there is an error
   */
 
-string PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
-    if(operand.type == OperandValidator::OperandType::LABEL) {
+Symbol PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg) {
+    Symbol result;
+    if (operand.operand == "*") {
+        result.value = locator;
+        result.isAbs = false;
+    } else if(operand.type == OperandValidator::OperandType::LABEL) {
         if (symTab->hasLabel(operand.operand)) {
-            return symTab->getLocator(operand.operand);
+            result = symTab->getSympol(operand.operand);
         } else {
             addErrorMessage(msg, "undefined sympol " + operand.operand + " before address " + locator);
-            return "000000";
         }
     } else if (operand.type == OperandValidator::OperandType::REGESTER) {
-        return symTab->getRegister(operand.operand);
+        result.value = symTab->getRegister(operand.operand);
+        result.isAbs = true;
     } else if (operand.isNumber()) {
-        return autalities::intToWord(operand.operand);
+        result.value = autalities::intToWord(operand.operand);
+        result.isAbs = true;
     } else if (operand.isLiteral()) {
-        return "00";
+        result.value = "00";
+        result.isAbs = false;
     } else if (operand.type == OperandValidator::OperandType::EXPRESION) {
-        return OperandValidator::evaluateExpression(operand, locator, symTab).value;
+        result = OperandValidator::evaluateExpression(operand, locator, symTab);
     }
-    return "";
+    return result;
 }

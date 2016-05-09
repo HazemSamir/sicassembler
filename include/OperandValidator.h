@@ -26,7 +26,7 @@ const regex NUM_REGEX("([#@]?)([\\+\\-]?[0-9]+)", regex_constants::ECMAScript);
 
 const regex HEX_REGEX("[0-9a-fA-F]+", regex_constants::ECMAScript);
 
-const regex EXPERSION_REGEX("([\\w\\*]+)(\\s*[\\+\\-]\\s*([\\w\\*]+))*", regex_constants::ECMAScript);
+const regex EXPERSION_REGEX("(\\w+|\\*)(\\s*([\\+\\*/\\-])\\s*(\\w+|\\*))?", regex_constants::ECMAScript);
 
 const regex COMMA_REGEX("(\\s*[^,^\\s]+\\s*,)*\\s*[^,^\\s]+\\s*", regex_constants::ECMAScript);
 

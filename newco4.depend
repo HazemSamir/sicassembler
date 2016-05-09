@@ -1,0 +1,73 @@
+# depslib dependency file v1.0
+1462554919 source:c:\users\tarek nawara\desktop\sica\src\operandvalidator.cpp
+	"OperandValidator.h"
+
+1462554919 c:\users\tarek nawara\desktop\sica\include\operandvalidator.h
+	"Includes.h"
+	"AssemblerUtalities.h"
+
+1462534698 c:\users\tarek nawara\desktop\sica\include\includes.h
+	<bits/stdc++.h>
+	<regex>
+
+1462554919 c:\users\tarek nawara\desktop\sica\include\assemblerutalities.h
+	"Includes.h"
+
+1462534698 source:c:\users\tarek nawara\desktop\sica\main.cpp
+	<getopt.h>
+	<PassOne.h>
+	<FixedFormatReader.h>
+	<Includes.h>
+
+1462537622 c:\users\tarek nawara\desktop\sica\include\passone.h
+	"Includes.h"
+	"InputReader.h"
+	"FreeFormatReader.h"
+	"FixedFormatReader.h"
+	"OpTable.h"
+	"DirectivseTable.h"
+	"SymTable.h"
+	"OperandValidator.h"
+
+1462536334 c:\users\tarek nawara\desktop\sica\include\inputreader.h
+	"Includes.h"
+	"AssemblerUtalities.h"
+	"OperandValidator.h"
+
+1462534698 c:\users\tarek nawara\desktop\sica\include\freeformatreader.h
+	"InputReader.h"
+
+1462536308 c:\users\tarek nawara\desktop\sica\include\fixedformatreader.h
+	"Includes.h"
+	"InputReader.h"
+
+1462536461 c:\users\tarek nawara\desktop\sica\include\optable.h
+	"Includes.h"
+
+1462536307 c:\users\tarek nawara\desktop\sica\include\directivsetable.h
+	"Includes.h"
+
+1462537622 c:\users\tarek nawara\desktop\sica\include\symtable.h
+	"Includes.h"
+
+1462557111 source:c:\users\tarek nawara\desktop\sica\src\assemblerutalities.cpp
+	"AssemblerUtalities.h"
+
+1462534435 source:c:\users\tarek nawara\desktop\sica\src\directive.cpp
+	"Directive.h"
+
+1462536307 c:\users\tarek nawara\desktop\sica\include\directive.h
+	"Includes.h"
+
+1462534435 source:c:\users\tarek nawara\desktop\sica\src\directivsetable.cpp
+	"DirectivseTable.h"
+
+1462536996 source:c:\users\tarek nawara\desktop\sica\src\fixedformatreader.cpp
+	"FixedFormatReader.h"
+
+1462537622 source:c:\users\tarek nawara\desktop\sica\src\freeformatreader.cpp
+	"FreeFormatReader.h"
+	"Includes.h"
+	"OpTable.h"
+	"DirectivseTable.h"
+

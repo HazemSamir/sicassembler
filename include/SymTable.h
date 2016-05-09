@@ -23,7 +23,7 @@ public:
         return *(this);
     }
 
-    Sympol operator -= (const Sympol b){
+    Sympol operator -= (const Sympol b) {
         value = autalities::intToHex(autalities::subtractHex(value, b.value));
         isAbs = ((isAbs and b.isAbs) or (!isAbs and !b.isAbs));
         return *(this);
@@ -37,6 +37,24 @@ public:
     friend Sympol operator - (Sympol a, const Sympol b) {
         a -= b;
         return a;
+    }
+
+    Sympol operator *=(const Sympol b) {
+        int intValue = autalities::hexToInteger(value);
+        string temp = b.value;
+        intValue *= autalities::hexToInteger(temp);
+        this->isAbs = true;
+        this->value = autalities::intToHex(intValue);
+        return *(this);
+    }
+
+    Sympol operator /=(const Sympol b) {
+        int intValue = autalities::hexToInteger(value);
+        string temp = b.value;
+        intValue /= autalities::hexToInteger(temp);
+        this->isAbs = true;
+        this->value = autalities::intToHex(intValue);
+        return *(this);
     }
 };
 
