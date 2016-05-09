@@ -12,6 +12,7 @@ PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, 
     opTab = new OpTable();
     symTab = symtabel;
     dirTab = new DirectivseTable();
+    this->literalPool = literalPool;
     opwriter = new ObjectWriter(objectFile);
     this -> length = length;
 }
@@ -208,7 +209,7 @@ Sympol PassTwo::evaluateOperand(OperandValidator::Operand &operand, string &msg)
         result.value = autalities::intToWord(operand.operand);
         result.isAbs = true;
     } else if (operand.isLiteral()) {
-        result.value = "00";
+        result.value = literalPool->getLocator(operand.toHex());
         result.isAbs = false;
     } else if (operand.type == OperandValidator::OperandType::EXPRESION) {
         result = OperandValidator::evaluateExpression(operand, locator, symTab);

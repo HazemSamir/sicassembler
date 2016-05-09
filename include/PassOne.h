@@ -25,6 +25,7 @@
 #include "OpTable.h"
 #include "DirectivseTable.h"
 #include "SymTable.h"
+#include "LiteralPool.h"
 
 #endif // TABELS
 
@@ -47,11 +48,15 @@ public:
 
     int getErrorsCounter();
 
+    LiteralPool *getLiteralPool(){
+        return literalPool;
+    }
 
 private:
     InputReader *input;
     OpTable *opTab;
     SymTable *symTab;
+    LiteralPool *literalPool;
     string startingAdress = "000000";
     string locator = "000000", tmpLocator = "";
     string outputFile;
@@ -73,7 +78,7 @@ private:
 
     void handelEqu(vector<OperandValidator::Operand> args, string label, string &msg);
 
-    void handelLtorg(string &msg);
+    void handelLtorg(string &msg ,int lineNumber);
 
     void addToMessage(string &msg, string toBeAdded);
 

@@ -25,6 +25,7 @@ private:
     OpTable *opTab;
     SymTable *symTab;
     ObjectWriter *opwriter;
+    LiteralPool *literalPool;
     string startingAdress = "000000";
     string locator = "000000";
     string length;

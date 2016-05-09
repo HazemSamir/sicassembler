@@ -1,0 +1,79 @@
+1	000000	.2345678901234567890
+2	000000	COPY     START   1000
+3	001000	FIRST    STL     RETADR
+4	001003	LDB     #LENGTH
+5	001006	BASE    LENGTH
+6	001006	LDA     =C'4545'
+7	001009	LDA     =X'4a84'
+8	00100C	LTORG
+8	00100C	byte X'34353435'
+8	001010	byte X'4a84'
+9	001012	CLOOP   +JSUB    RDREC
+10	001016	LDA     LENGTH
+11	001019	COMP    #0
+12	00101C	JEQ     ENDFIL
+13	00101F	+JSUB    WRREC
+14	001023	J       CLOOP
+15	001026	ENDFIL   LDA     EOF
+16	001029	STA     BUFFER
+17	00102C	LDA     #3
+18	00102F	STA     LENGTH
+19	001032	+JSUB    WRREC
+20	001036	J       @RETADR
+21	001039	EOF      BYTE    C'EOF'
+22	00103C	RETADR   RESW    1
+23	00103F	LENGTH   RESW    1
+24	001042	BUFFER   RESB    4096
+25	002042	.
+26	002042	.        SUBROUTINE TO READ RECORD INTO BUFFER
+27	002042	.
+28	002042	RDREC    CLEAR   X
+29	002044	CLEAR   A
+30	002046	CLEAR   S
+31	002048	fourk    equ     4096
+32	002048	+LDT     #fourk
+33	00204C	RLOOP    TD      INPUT
+34	00204F	JEQ     RLOOP
+35	002052	RD      INPUT
+36	002055	COMPR   A,S
+37	002057	JEQ     EXIT
+38	00205A	STCH    BUFFER,X
+39	00205D	TIXR    T
+40	00205F	JLT     RLOOP
+41	002062	EXIT     STX     LENGTH
+42	002065	RSUB
+43	002068	INPUT    BYTE    X'F1'
+44	002069	.
+45	002069	.        SUBROUTINE TO WRITE RECORD FROM BUFFER
+46	002069	.
+47	002069	WRREC    CLEAR   X
+48	00206B	LDT     LENGTH
+49	00206E	WLOOP    TD      OUTPUT
+50	002071	JEQ     WLOOP
+51	002074	LDCH    BUFFER,X
+52	002077	WD      OUTPUT
+53	00207A	TIXR    T
+54	00207C	JLT     WLOOP
+55	00207F	RSUB
+56	002082	OUTPUT   BYTE    X'05'
+57	002083	END     FIRST
+****	**********End of pass 1***********
+****		output              002082    realocatable   
+****		wrrec               002069    realocatable   
+****		input               002068    realocatable   
+****		exit                002062    realocatable   
+****		first               001000    realocatable   
+****		cloop               001012    realocatable   
+****		eof                 001039    realocatable   
+****		fourk               001000    absolute       
+****		endfil              001026    realocatable   
+****		wloop               00206e    realocatable   
+****		rdrec               002042    realocatable   
+****		retadr              00103c    realocatable   
+****		length              00103f    realocatable   
+****		buffer              001042    realocatable   
+****		rloop               00204c    realocatable   
+
+************* 	pass 2 report *************
+
+

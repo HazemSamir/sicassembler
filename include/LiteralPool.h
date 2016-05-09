@@ -24,8 +24,16 @@ public:
         return literalPool;
     }
 
+    vector<string> getUnassignedLiterals() {
+        return unassignedLiterals;
+    }
+
+    void clear() {
+        unassignedLiterals.clear();
+    }
 private:
     map<string, string> literalPool;
+    vector<string>unassignedLiterals;
 };
 
 
