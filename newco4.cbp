@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="pass1" />
+		<Option title="assembler" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../sica_build/bin/pass1" prefix_auto="1" extension_auto="1" />
+				<Option output="../sica_build/bin/assembler" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../sica_build/obj/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
