@@ -21,6 +21,8 @@ void removeTrailingSpaces(string &s);
 
 void dos2unix(string &s);
 
+string repeat(const string &word, int times);
+
 int toInteger(string &txt);
 
 int hexToInteger(char c);
@@ -40,6 +42,8 @@ string intToBin(int number, int sz);
 int binToInteger(string a);
 
 int subtractHex(string a, string b);
+
+string addHex(string a, string b);
 
 string intToByte(int decimal);
 

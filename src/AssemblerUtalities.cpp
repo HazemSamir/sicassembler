@@ -66,6 +66,15 @@ void dos2unix(string &s) {
         s.pop_back();
     }
 }
+
+string repeat(const string &word, int times) {
+   string result;
+   result.reserve(times * word.length()); // avoid repeated reallocation
+   for ( int a = 0 ; a < times ; a++)
+      result += word ;
+   return result;
+}
+
 /**
  * @param txt
  *            string of digit characters
@@ -216,6 +225,20 @@ int binToInteger(string a) {
 
 int subtractHex(string a, string b) {
     return (hexToInteger(a) - hexToInteger(b));
+}
+
+
+/**
+ * @param a
+ *          hex string
+ * @param b
+ *          hex string
+ * @return hex string
+ * @brief (return the result of (a+b) as hex string)
+ */
+
+string addHex(string a, string b) {
+    return intToHex(hexToInteger(a) + hexToInteger(b));
 }
 
 

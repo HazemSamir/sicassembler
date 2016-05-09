@@ -68,7 +68,11 @@ public:
 
 vector<Operand> getOperands(string field);
 
-    vector<Operand> getOperands(vector<string> args);
+vector<Operand> getOperands(vector<string> args);
+
+Operand toOperand(string arg);
+
+Sympol toSympol(string operand, string locator, SymTable *symTab);
 
 Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab);
 

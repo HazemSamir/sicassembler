@@ -46,25 +46,6 @@ bool Operand::isHex() {
     return (type == OperandType::HEX || isPosNumber());
 }
 
-vector<string> splitAtComma(string field) {
-    vector<string> ret;
-    if(field.empty())
-        return ret;
-    bool speratedWithComma = regex_match(field, COMMA_REGEX);
-    if(regex_match(field, CBYTES_REGEX) || regex_match(field, CBYTES_REGEX) || !speratedWithComma) {
-        ret.push_back(field);
-    } else if (speratedWithComma) {
-        replace(field.begin(), field.end(), ',', ' ');
-        stringstream ss(field);
-        string tmp;
-        while(ss >> tmp) {
-            ret.push_back(tmp);
-        }
-    }
-    return ret;
-}
-
-
 string Operand::stringType() {
     return "";
 }
@@ -83,28 +64,107 @@ string Operand::toHex() {
     return ret;
 }
 
+/*******************************************************/
+
+vector<string> splitAtComma(string field) {
+    vector<string> ret;
+    if(field.empty())
+        return ret;
+    bool speratedWithComma = regex_match(field, COMMA_REGEX);
+    if(regex_match(field, CBYTES_REGEX) || regex_match(field, CBYTES_REGEX) || !speratedWithComma) {
+        ret.push_back(field);
+    } else if (speratedWithComma) {
+        replace(field.begin(), field.end(), ',', ' ');
+        stringstream ss(field);
+        string tmp;
+        while(ss >> tmp) {
+            ret.push_back(tmp);
+        }
+    }
+    return ret;
+}
+
+vector<string> splitExpression(string expression) {
+    vector<string> terms;
+    int splits = count(expression.begin(), expression.end(), '+')
+                 + count(expression.begin(), expression.end(), '-');
+    static string termRegex = "\\s*([\\+\\-])\\s*([\\w\\*]+)";
+    string regexString = "([\\w\\*]+)" + autalities::repeat(termRegex, splits);
+    regex expressionRegex(regexString, regex_constants::ECMAScript);
+    smatch sm;
+    regex_match(expression, sm, expressionRegex);
+    for(string term : sm){
+        terms.push_back(term);
+    }
+    return terms;
+}
+
 /** @brief (evaluate expression and return its hex value and type (absolute or realocatble))
   * @return
-  *        Sympol object if there is an error then return empty string
+  *        Sympol object, if there is an error then return Sympol with empty string
   */
 
 Sympol evaluateExpression(Operand expression, string locator, SymTable *symTab) {
-    smatch sm;
-    Sympol symp;
-    if(regex_match(expression.operand, sm, EXPERSION_REGEX)) {
-        vector<string> terms;
+    Sympol emptySymp, res;
+    if(regex_match(expression.operand, EXPERSION_REGEX)) {
+        vector<string> terms = splitExpression(expression.operand);
+        res = toSympol(terms[0], locator, symTab);
+        for(int i = 2; i < terms.size(); i += 2) {
+            Sympol operand2 = toSympol(terms[i], locator, symTab);
+            if(operand2.value.empty()){ // error in evaluating this term
+                return emptySymp;
+            }
+            if(terms[i-1] == "+") {
+                res += operand2;
+            } else if (terms[i-1] == "-") {
+                res -= operand2;
+            } else { // error not supported operator
+                return emptySymp;
+            }
+        }
     }
-    return symp;
+    return res;
 }
+
+/** @brief (split the given string at commas and match it with different regexes)
+  * @return
+  *        vector of operands, if there is an error then return empty vector
+  */
 
 vector<Operand> getOperands(string field) {
     return getOperands(splitAtComma(field));
 }
 
+/** @brief (match each string in args with different regexes)
+  * @return
+  *        vector of operands, if there is an error then return empty vector
+  */
 vector<Operand> getOperands(vector<string> args) {
     vector<Operand> operandList;
     for(string arg : args) {
-        Operand tmp;
+        Operand tmp = toOperand(arg);
+        if(tmp.type == OperandType::REGESTER
+                && tmp.operand == "x"
+                && !operandList.empty() && operandList.back().ofType(OperandTypeGroup::MEMORY)) {
+
+            operandList.back().isIndexed = true;
+        } else {
+            operandList.push_back(tmp);
+        }
+    }
+    return operandList;
+}
+
+/** @brief (match string with different regexes and extract different information about it)
+  * @return
+  *        object of Operand, if there is an error then type set to be NO_MATCH
+  *
+  * turn the operand to lower case if it is not a char array
+  * set flags if immediate(#), indirect(@) or indexed(,X)
+  * set operand type form enum operand type
+  */
+Operand toOperand(string arg) {
+    Operand tmp;
         tmp.operand = autalities::tolow(arg);
         smatch sm;
         if (regex_match(arg, RIGESTER_REGEX)) {
@@ -137,16 +197,33 @@ vector<Operand> getOperands(vector<string> args) {
             tmp.type = OperandType::EXPRESION;
             tmp.operand = autalities::tolow(sm[0]);
         }
-        if(tmp.type == OperandType::REGESTER
-                && tmp.operand == "x"
-                && !operandList.empty() && operandList.back().ofType(OperandTypeGroup::MEMORY)) {
-
-            operandList.back().isIndexed = true;
-        } else {
-            operandList.push_back(tmp);
-        }
-    }
-    return operandList;
+    return tmp;
 }
+
+
+/** @brief (evaluate hex value of the given string)
+  * @return
+  *        Sympol, if there is an error then return sympol with empty value
+  */
+Sympol toSympol(string operand, string locator, SymTable *symTab) {
+    Sympol ret;
+    Operand tmp = toOperand(operand);
+    string value = "";
+    if(tmp.type == OperandType::LABEL) {
+        if(symTab->hasLabel(tmp.operand)) {
+            return symTab->getSympol(tmp.operand);
+        } else {
+            return ret; // error undefined label
+        }
+    } else if (tmp.operand == "*") {
+        ret.value = locator;
+        ret.isAbs = false;
+    } else if(tmp.isNumber() && tmp.isPlain()){
+        ret.value = tmp.toHex();
+        ret.isAbs = true;
+    }
+    return ret;
+}
+
 
 }
