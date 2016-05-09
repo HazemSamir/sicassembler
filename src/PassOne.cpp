@@ -249,7 +249,7 @@ void PassOne::handelLtorg(string &msg , int lineNumber) {
         vector<OperandValidator::Operand>operands;
         operands.push_back(temp);
         outStream << lineNumber << "\t" << autalities::toUp(locator) << "\t";
-        outStream << "byte " << "X\'" << s << "\'" << "\n";
+        outStream << "byte \t" << "X\'" << s << "\'" << "\n";
         handelByte(operands,msg);
     }
     literalPool->clear();
