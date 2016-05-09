@@ -6,15 +6,16 @@
 
 const int MAX_PC = 2047, MIN_PC = -2048, MAX_BASE = 4096, MAX_MEMORY = (1 << 20);
 
-PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length) {
-    intermediateFile = fileName;
+PassTwo::PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length, string output) {
+    this -> objectFile = output;
+    this -> intermediateFile = fileName;
+    this -> length = length;
+    this -> symTab = symtabel;
+    this -> literalPool = literalPool;
     input = new IntermediateReader(intermediateFile);
     opTab = new OpTable();
-    symTab = symtabel;
     dirTab = new DirectivseTable();
-    this->literalPool = literalPool;
     opwriter = new ObjectWriter(objectFile);
-    this -> length = length;
 }
 
 void PassTwo::pass() {
@@ -28,10 +29,11 @@ void PassTwo::pass() {
             string operand = input->getOperand();
             auto args = input->getArgs(); // operand subfields
             locator = input->getLocator();
-
             if (operation == "start") {
                 handelStart(args, label, msg);
             } else if (opTab->hasOperation(operation)) { // valid operation
+                addToMessage(msg, "\n");
+                addToMessage(msg, operation + "\t" + operand);
                 handelOperation(args, msg, operation, input->isFormatFour());
             } else if (operation == "word") {
                 handelWord(args, msg);
@@ -48,7 +50,6 @@ void PassTwo::pass() {
             } // no other check or error as it passes pass 1
         }
         if (errorCounter > 0) {
-            addToMessage(msg, input->getLine());
             break;
         }
     }
@@ -86,6 +87,7 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             } else {
                 address += "0";
             }
+            addToMessage(msg, "opCode=" + opCode + "\t\t\toperand="+address);
             opwriter->writeTextRecord(opCode + address);
         } else {
             flags[0] = args[0].isInDirect ? '1' : '0';
@@ -124,14 +126,18 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
                 addErrorMessage(msg, "out of memory bounds");
             }
             address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
+            addToMessage(msg, "opCode=" + opCode + "\tflags=" + flags + "\toperand="+address.value);
             opwriter->writeTextRecord(opCode, flags, address.value);
         }
-    } else {
+    } else { // operation does not take arguments
         if(format == 4) {
+            addToMessage(msg, "opCode=" + opCode + "\tflags=110001\toperand=00000");
             opwriter->writeTextRecord(opCode, "110001", "00000");
         } else if (format == 3){
+            addToMessage(msg, "opCode=" + opCode + "\tflags=110000\toperand=000");
             opwriter->writeTextRecord(opCode, "110000", "000");
         } else {
+            addToMessage(msg, "opCode=" + opCode + "\t\t\toperand=00");
             opwriter->writeTextRecord(opCode + "00");
         }
 

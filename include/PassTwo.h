@@ -16,7 +16,7 @@
 
 class PassTwo {
 public:
-    PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length);
+    PassTwo(string fileName, SymTable *symtabel, LiteralPool *literalPool, string length, string output="op.txt");
 
     void pass();
 
@@ -34,7 +34,7 @@ private:
     int lineCounter = 0;
     string base = "";
 
-    string intermediateFile, objectFile = "op.txt";
+    string intermediateFile, objectFile;
 
     void handelStart(vector<OperandValidator::Operand> args, string label, string &msg);
 

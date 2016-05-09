@@ -76,4 +76,160 @@
 
 ************* 	pass 2 report *************
 
+****	
+
+****	stl	RETADR
+****	opCode=14	flags=110010	operand=039
+****	
+
+****	ldb	#LENGTH
+****	opCode=68	flags=010010	operand=039
+****	
+
+****	lda	=C'4545'
+****	opCode=00	flags=110010	operand=003
+****	
+
+****	lda	=X'4a84'
+****	opCode=00	flags=110010	operand=004
+****	
+
+****	jsub	RDREC
+****	opCode=48	flags=110001	operand=02042
+****	
+
+****	lda	LENGTH
+****	opCode=00	flags=110010	operand=026
+****	
+
+****	comp	#0
+****	opCode=28	flags=010000	operand=000
+****	
+
+****	jeq	ENDFIL
+****	opCode=30	flags=110010	operand=007
+****	
+
+****	jsub	WRREC
+****	opCode=48	flags=110001	operand=02069
+****	
+
+****	j	CLOOP
+****	opCode=3c	flags=110010	operand=fec
+****	
+
+****	lda	EOF
+****	opCode=00	flags=110010	operand=010
+****	
+
+****	sta	BUFFER
+****	opCode=0c	flags=110010	operand=016
+****	
+
+****	lda	#3
+****	opCode=00	flags=010000	operand=003
+****	
+
+****	sta	LENGTH
+****	opCode=0c	flags=110010	operand=00d
+****	
+
+****	jsub	WRREC
+****	opCode=48	flags=110001	operand=02069
+****	
+
+****	j	@RETADR
+****	opCode=3c	flags=100010	operand=003
+****	
+
+****	clear	X
+****	opCode=b4			operand=10
+****	
+
+****	clear	A
+****	opCode=b4			operand=00
+****	
+
+****	clear	S
+****	opCode=b4			operand=40
+****	
+
+****	ldt	#fourk
+****	opCode=74	flags=010001	operand=01000
+****	
+
+****	td	INPUT
+****	opCode=e0	flags=110010	operand=019
+****	
+
+****	jeq	RLOOP
+****	opCode=30	flags=110010	operand=ffa
+****	
+
+****	rd	INPUT
+****	opCode=d8	flags=110010	operand=013
+****	
+
+****	compr	A,S
+****	opCode=a0			operand=04
+****	
+
+****	jeq	EXIT
+****	opCode=30	flags=110010	operand=008
+****	
+
+****	stch	BUFFER,X
+****	opCode=54	flags=111100	operand=003
+****	
+
+****	tixr	T
+****	opCode=b8			operand=50
+****	
+
+****	jlt	RLOOP
+****	opCode=38	flags=110010	operand=fea
+****	
+
+****	stx	LENGTH
+****	opCode=10	flags=110100	operand=000
+****	
+
+****	rsub	
+****	opCode=4c	flags=110000	operand=000
+****	
+
+****	clear	X
+****	opCode=b4			operand=10
+****	
+
+****	ldt	LENGTH
+****	opCode=74	flags=110100	operand=000
+****	
+
+****	td	OUTPUT
+****	opCode=e0	flags=110010	operand=011
+****	
+
+****	jeq	WLOOP
+****	opCode=30	flags=110010	operand=ffa
+****	
+
+****	ldch	BUFFER,X
+****	opCode=50	flags=111100	operand=003
+****	
+
+****	wd	OUTPUT
+****	opCode=dc	flags=110010	operand=008
+****	
+
+****	tixr	T
+****	opCode=b8			operand=50
+****	
+
+****	jlt	WLOOP
+****	opCode=38	flags=110010	operand=fef
+****	
+
+****	rsub	
+****	opCode=4c	flags=110000	operand=000
 
