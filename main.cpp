@@ -19,7 +19,7 @@ void runPass1(bool isFixed, string sourceName, string outputName) {
     p->pass();
     cout << "\n***************************\n\n";
     if (p->getErrorsCounter() == 0) {
-        PassTwo *p2 = new PassTwo(outputName, p->getSymTable(), nullptr, p->getprogrammLength());
+        PassTwo *p2 = new PassTwo(outputName, p->getSymTable(), p->getLiteralPool(), p->getprogrammLength());
         p2->pass();
     }
 }

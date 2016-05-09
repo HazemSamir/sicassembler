@@ -5,21 +5,24 @@
 #include "LiteralPool.h"
 
 void LiteralPool::insert(string literal, string locator) {
-
+    literalPool[literal] = locator;
 }
 
 void LiteralPool::insert(string literal) {
-
+    if(!hasLiteral(literal)){
+        unassignedLiterals.push_back(literal);
+        literalPool[literal] = "";
+    }
 }
 
 string LiteralPool::getLocator(string literal) {
-    return std::basic_string<char, char_traits<char>, allocator<char>>();
+    return literalPool[literal];
 }
 
 bool LiteralPool::hasLiteral(string literal) {
-    return false;
+    return !(literalPool.find(literal) == literalPool.end());
 }
 
 int LiteralPool::getIncrement() {
-    return 0;
+    return literalPool.size();
 }

@@ -1,37 +1,57 @@
-.  copy  8 integers from u to v
-.  loop  index <> 1
-prog     start   0
-.  lda  #6
-bgn      lds     #3
-         ldt     #24
-         +ldx     #0
-   loop     lDa     u,x
-         sta     v,x
-                  addr    s,x
-    label1  equ bgn - loop
-HAMada     compr                x,t
-         ADRS            equ   ***
-   label2 equ      hamada + label1
-  label3    equ      hamada-label1
-         jlt                *-10
-         j       *
+.2345678901234567890
+COPY     START   1000
+FIRST    STL     RETADR
+         LDB     #LENGTH
+         BASE    LENGTH
+         LDA     =C'4545'
+         LDA     =X'4a84'
+         LTORG
+CLOOP   +JSUB    RDREC
+         LDA     LENGTH
+         COMP    #0
+         JEQ     ENDFIL
+        +JSUB    WRREC
+         J       CLOOP
+ENDFIL   LDA     EOF
+         STA     BUFFER
+         LDA     #3
+         STA     LENGTH
+        +JSUB    WRREC
+         J       @RETADR
+EOF      BYTE    C'EOF'
+RETADR   RESW    1
+LENGTH   RESW    1
+BUFFER   RESB    4096
 .
-         .   list of values for u
-u                    word    1,2,3
-         word            4
-                 word    5
-         word    6
-                   word        7
-         word    8
-                 LDA   Col1,X
-         TABLE   resb  100
-         ORG   table+3
-         Col1    resb  3
-         Col2    resb  3
-         ORG
-         ALPHA   eQu   313-91293
-         ENDOFT  resb 1
-         LENT  equ ENDOFT - TABLE
-.   array to store results
-v        resw         100
-                     end
+.        SUBROUTINE TO READ RECORD INTO BUFFER
+.
+RDREC    CLEAR   X
+         CLEAR   A
+         CLEAR   S
+fourk    equ     4096
+        +LDT     #fourk
+RLOOP    TD      INPUT
+         JEQ     RLOOP
+         RD      INPUT
+         COMPR   A,S
+         JEQ     EXIT
+         STCH    BUFFER,X
+         TIXR    T
+         JLT     RLOOP
+EXIT     STX     LENGTH
+         RSUB
+INPUT    BYTE    X'F1'
+.
+.        SUBROUTINE TO WRITE RECORD FROM BUFFER
+.
+WRREC    CLEAR   X
+         LDT     LENGTH
+WLOOP    TD      OUTPUT
+         JEQ     WLOOP
+         LDCH    BUFFER,X
+         WD      OUTPUT
+         TIXR    T
+         JLT     WLOOP
+         RSUB
+OUTPUT   BYTE    X'05'
+         END     FIRST

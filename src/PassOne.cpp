@@ -41,7 +41,8 @@ void PassOne::pass() {
             } else {
                 if (noStart) {
                     noStart = false;
-                    addErrorMessage(msg, "messing start statement");
+                    started = true;
+                    //addErrorMessage(msg, "messing start statement");
                 }
                 /// handel label and add it to symtable
                 string label = input->getLabel();
@@ -74,12 +75,17 @@ void PassOne::pass() {
                     } else if (operation == "equ") {
                         handelEqu(args, label, msg);
                     } else if (operation == "ltorg") {
-                        handelLtorg(msg);
+                        handelLtorg(msg,lineNumber);
                     } else if (dirTab->contains(operation) && dirTab->notSupported(operation)) {
                         addWarningMessage(msg, "not supported directive");
                     } else if (!dirTab->contains(operation)) {
                         addErrorMessage(msg, "invalid operation code");
                     }
+                    if(args.size() > 0 && args[0].isLiteral()){
+                        string value = args[0].toHex();
+                        literalPool->insert(value);
+                    }
+
                 } else {
                     addErrorMessage(msg, "operation field is messing");
                 }
@@ -94,6 +100,7 @@ void PassOne::pass() {
         addErrorMessage(msg, "no end found");
         outStream << msg;
     }
+    handelLtorg(msg,lineNumber);
     outStream << "****\t**********End of pass 1***********\n";
     if (errorCounter > 0) {
         outStream << ">>> incomplete assembely with " << errorCounter << " errors\n";
@@ -232,8 +239,20 @@ void PassOne::handelEqu(vector<OperandValidator::Operand> args, string label, st
     }
 }
 
-void PassOne::handelLtorg(string &msg) {
-
+void PassOne::handelLtorg(string &msg , int lineNumber) {
+    vector<string>unassigned = literalPool->getUnassignedLiterals();
+    for(auto s : unassigned){
+        literalPool->insert(s,locator);
+        OperandValidator::Operand temp;
+        temp.operand = s;
+        temp.type = OperandValidator::OperandType::XBYTES;
+        vector<OperandValidator::Operand>operands;
+        operands.push_back(temp);
+        outStream << lineNumber << "\t" << autalities::toUp(locator) << "\t";
+        outStream << "byte " << "X\'" << s << "\'" << "\n";
+        handelByte(operands,msg);
+    }
+    literalPool->clear();
 }
 
 /** @brief (print symtable contents to output stream after success assemble)
@@ -298,6 +317,7 @@ PassOne::PassOne(InputReader *reader, string outputFile) {
     opTab = new OpTable();
     symTab = new SymTable();
     dirTab = new DirectivseTable();
+    literalPool = new LiteralPool();
     this->outputFile = outputFile;
     outStream.open(outputFile, ios_base::out);
 }
