@@ -17,13 +17,6 @@ public:
 
     bool hasLiteral(string literal);
 
-    // @return the size of the current pool
-    int getIncrement();
-
-    map<string, string> getLiteralPool() {
-        return literalPool;
-    }
-
     vector<string> getUnassignedLiterals() {
         return unassignedLiterals;
     }
@@ -32,7 +25,7 @@ public:
         unassignedLiterals.clear();
     }
 private:
-    map<string, string> literalPool;
+    unordered_map<string, string> literalPool;
     vector<string>unassignedLiterals;
 };
 

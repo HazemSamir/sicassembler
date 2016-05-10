@@ -246,8 +246,7 @@ void PassOne::handelLtorg(string &msg , int lineNumber) {
         OperandValidator::Operand temp;
         temp.operand = s;
         temp.type = OperandValidator::OperandType::XBYTES;
-        vector<OperandValidator::Operand>operands;
-        operands.push_back(temp);
+        vector<OperandValidator::Operand>operands {temp};
         outStream << lineNumber << "\t" << autalities::toUp(locator) << "\t";
         outStream << "byte \t" << "X\'" << s << "\'" << "\n";
         handelByte(operands,msg);

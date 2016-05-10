@@ -31,7 +31,8 @@ bool Operand::isMemory() {
 }
 
 bool Operand::isLiteral() {
-    return (type == OperandType::CLITERAL || type == OperandType::XLITERAL);
+    return (type == OperandType::CLITERAL || type == OperandType::XLITERAL
+            || type == OperandType::DLITERAL);
 }
 
 bool Operand::isNumber() {
@@ -52,7 +53,7 @@ string Operand::stringType() {
 
 string Operand::toHex() {
     string ret = "";
-    if (isNumber()) {
+    if (isNumber() || type == OperandType::DLITERAL) {
         return autalities::intToWord(operand);
     } else if (isHex() || type == OperandType::XBYTES || type == OperandType::XLITERAL) {
         return operand;
@@ -198,6 +199,9 @@ Operand toOperand(string arg) {
         } else if(regex_match(arg, sm, XLITERAL_REGEX)) {
             tmp.type = OperandType::XLITERAL;
             tmp.operand = autalities::tolow(sm[1]);
+        } else if(regex_match(arg, sm, DLITERAL_REGEX)) {
+            tmp.type = OperandType::DLITERAL;
+            tmp.operand = sm[1];
         } else if(regex_match(arg, sm, CLITERAL_REGEX)) {
             tmp.type = OperandType::CLITERAL;
             tmp.operand = sm[1];

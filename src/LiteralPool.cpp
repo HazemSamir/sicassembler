@@ -22,7 +22,3 @@ string LiteralPool::getLocator(string literal) {
 bool LiteralPool::hasLiteral(string literal) {
     return !(literalPool.find(literal) == literalPool.end());
 }
-
-int LiteralPool::getIncrement() {
-    return literalPool.size();
-}
