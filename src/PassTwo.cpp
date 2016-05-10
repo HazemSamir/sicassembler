@@ -175,6 +175,8 @@ void PassTwo::handelBase(vector<OperandValidator::Operand> args, string &msg) {
         Sympol symp = evaluateOperand(args[0], msg);
         if(symp.value.empty()) {
             addErrorMessage(msg, "error in evaluating the operand");
+        } else if (symp.isAbs){
+            addErrorMessage(msg, "base must take a reallocatble address");
         } else {
             base = symp.value;
         }
