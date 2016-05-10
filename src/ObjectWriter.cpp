@@ -16,7 +16,7 @@ void ObjectWriter::writeHeader(string start, string programName, string programL
     programLength = autalities::normalize(programLength, 6);
     startAddress = start;
     currentRecord = "";
-    out << "H" << programName << SEPARATOR << start << SEPARATOR << programLength << "\n";
+    out << "H" << programName << SEPARATOR << autalities::toUp(start) << SEPARATOR << autalities::toUp(programLength) << "\n";
 }
 
 void ObjectWriter::writeTextRecord(string opCode, string flags, string address) {
@@ -41,7 +41,7 @@ void ObjectWriter::writeTextRecord(string start, string filed) {
 void ObjectWriter::writeEnd(string start) {
     startNewRecord("");
     writeModificationRecords();
-    out << "E" << autalities::normalize(start, 6) << "\n";
+    out << "E" << autalities::normalize(autalities::toUp(start), 6) << "\n";
     out.close();
 }
 
@@ -58,8 +58,8 @@ void ObjectWriter::writeTextRecord(string field) {
 
 void ObjectWriter::writeTextRecord() {
     if (!currentRecord.empty()) {
-        out << "T" << startAddress << SEPARATOR << autalities::intToByte(currentRecord.length() / 2) << SEPARATOR;
-        out << currentRecord << "\n";
+        out << "T" << autalities::toUp(startAddress) << SEPARATOR << autalities::toUp(autalities::intToByte(currentRecord.length() / 2)) << SEPARATOR;
+        out << autalities::toUp(currentRecord) << "\n";
     }
 }
 
@@ -73,7 +73,7 @@ void ObjectWriter::startNewRecord(string start) {
 }
 
 void ObjectWriter::addModificationRecord(string start) {
-    modification.push_back(autalities::normalize(start, 6) + SEPARATOR + "05");
+    modification.push_back(autalities::normalize(autalities::toUp(start), 6) + SEPARATOR + "05");
 }
 
 void ObjectWriter::writeModificationRecords() {

@@ -66,7 +66,8 @@ void PassTwo::pass() {
 
 void PassTwo::handelStart(vector<OperandValidator::Operand> args, string label, string &msg) {
     startingAdress = locator = args[0].operand;
-
+    locator = autalities::normalize(locator,6);
+    startingAdress = locator;
     if (label.length() > 6) {
         addErrorMessage(msg, "program name too long");
     }
@@ -124,6 +125,9 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
                 address.value = autalities::intToHex(disp);
             } else if (format == 4 && autalities::hexToInteger(address.value) > MAX_MEMORY) {
                 addErrorMessage(msg, "out of memory bounds");
+            }
+            if(format == 4 && startingAdress == "000000" && !args[0].isImmediate){
+                opwriter->addModificationRecord(addToLocator(locator,1));
             }
             address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
             addToMessage(msg, "opCode=" + opCode + "\tflags=" + flags + "\toperand="+address.value);

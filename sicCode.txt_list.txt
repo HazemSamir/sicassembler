@@ -1,0 +1,40 @@
+1	000000	.23456789012345678901234567890123456
+2	000000	START   0
+3	000000	BGN      LDA     #90
+4	000003	STA     ALPHA
+5	000006	+LDA    FOUR-ALPHA
+6	00000A	STA     BETA
+7	00000D	J       *
+8	000010	FOUR     WORD    4
+9	000013	ALPHA    RESW    1
+10	000016	BETA     RESW    1
+11	000019	END     BGN
+****	**********End of pass 1***********
+****		beta                000016    realocatable   
+****		alpha               000013    realocatable   
+****		four                000010    realocatable   
+****		bgn                 000000    realocatable   
+
+************* 	pass 2 report *************
+
+****	
+
+****	lda	#90
+****	opCode=00	flags=010000	operand=05a
+****	
+
+****	sta	ALPHA
+****	opCode=0c	flags=110010	operand=00d
+****	
+
+****	lda	FOUR-ALPHA
+****	opCode=00	flags=110001	operand=ffffd
+****	
+
+****	sta	BETA
+****	opCode=0c	flags=110010	operand=009
+****	
+
+****	j	*
+****	opCode=3c	flags=110010	operand=ffd
+
