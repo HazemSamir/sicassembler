@@ -21,6 +21,9 @@ VAR5     EQU     *-*
 ENDFIL   LDA     EOF
          STA     BUFFER
          LDA     #3
+         LDS     =C'4545'
+         LDT     =123
+         LTORG
          STA     LENGTH
         +JSUB    WRREC
          J       @RETADR
@@ -52,12 +55,11 @@ INPUT    BYTE    X'F1'
 .
 WRREC    CLEAR   X
          LDT     LENGTH
-WLOOP    TD      OUTPUT
+WLOOP    TD      =X'05'
          JEQ     WLOOP
          LDCH    BUFFER,X
-         WD      OUTPUT
+         WD      =X'05'
          TIXR    T
          JLT     WLOOP
          RSUB
-OUTPUT   BYTE    X'05'
          END     FIRST
