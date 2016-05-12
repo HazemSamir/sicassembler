@@ -6,6 +6,7 @@ SIC stands for Simplified Instructional Computer (the XE stands for Extra Equipm
 This is a two pass assembler to convert the sic/xe instructions into object code that can be run with different SIC simulators like: [http://jurem.github.io/SicTools/](http://jurem.github.io/SicTools/).
 
 This project was made by this team for System Programming course (CS 372) in Computer Engineering Department - Alexandria University
+
 1. Hazem Samir Ashmawy.
 2. Sherif Hassan Waly.
 3. Sherif Hamdy.
