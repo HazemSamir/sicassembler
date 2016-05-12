@@ -6,10 +6,9 @@ class FreeFormatReader : public InputReader {
 public:
     FreeFormatReader(string fileName): InputReader(fileName) {}
     bool hasNextLine() override;
-    void parse(string &line);
 protected:
+    void parse(string line);
 private:
-
 };
 
 #endif // FREEFORMATREADER_H

@@ -1,0 +1,275 @@
+1	000000	.2345678901234567890
+2	000000	COPY     START   0000
+3	000000	FIRST    STL     RETADR
+4	000003	LDB     #LENGTH
+5	000006	BASE    LENGTH
+6	000006	LDA     =C'4545'
+7	000009	LDA     =X'4a84'
+8	00000C	LTORG
+8	00000C	byte 	X'34353435'
+8	000010	byte 	X'4a84'
+9	000012	CLOOP   +JSUB    RDREC
+10	000016	LDA     LENGTH
+11	000019	COMP    #0
+12	00001C	VAR      EQU     -10*90
+13	00001C	VAR1     EQU     10*-90
+14	00001C	VAR2     EQU     -10*-90
+15	00001C	VAR3     EQU     -10 * -90
+16	00001C	VAR4     EQU     *+-10
+17	00001C	VAR5     EQU     *-*
+18	00001C	JEQ     ENDFIL
+19	00001F	+JSUB    WRREC
+20	000023	J       CLOOP
+21	000026	LDA     3
+22	000029	LDA     VAR5
+23	00002C	LDA     #VAR5
+24	00002F	ENDFIL   LDA     EOF
+25	000032	STA     BUFFER
+26	000035	LDA     #3
+27	000038	LDS     =C'4545'
+28	00003B	LDT     =123
+29	00003E	LTORG
+29	00003E	byte 	X'00007b'
+30	000041	STA     LENGTH
+31	000044	+JSUB    WRREC
+32	000048	J       @RETADR
+33	00004B	EOF      BYTE    C'EOF'
+34	00004E	W1       WORD    VAR3,VAR5,2+4
+35	000057	RETADR   RESW    1
+36	00005A	LENGTH   RESW    1
+37	00005D	BUFFER   RESB    4096
+38	00105D	.
+39	00105D	.        SUBROUTINE TO READ RECORD INTO BUFFER
+40	00105D	.
+41	00105D	RDREC    CLEAR   X
+42	00105F	CLEAR   A
+43	001061	CLEAR   S
+44	001063	fourk    equ     4096
+45	001063	+LDT     #fourk
+46	001067	RLOOP    TD      INPUT
+47	00106A	JEQ     RLOOP
+48	00106D	RD      INPUT
+49	001070	COMPR   A,S
+50	001072	JEQ     EXIT
+51	001075	STCH    BUFFER,X
+52	001078	TIXR    T
+53	00107A	JLT     RLOOP
+54	00107D	EXIT     STX     LENGTH
+55	001080	RSUB
+56	001083	INPUT    BYTE    X'F1'
+57	001084	.
+58	001084	.        SUBROUTINE TO WRITE RECORD FROM BUFFER
+59	001084	.
+60	001084	WRREC    CLEAR   X
+61	001086	LDT     LENGTH
+62	001089	WLOOP    TD      =X'05'
+63	00108C	JEQ     WLOOP
+64	00108F	LDCH    BUFFER,X
+65	001092	WD      =X'05'
+66	001095	TIXR    T
+67	001097	JLT     WLOOP
+68	00109A	RSUB
+69	00109D	END     FIRST
+70	00109D	byte 	X'05'
+****	**********End of pass 1***********
+****		wrrec               001084    realocatable   
+****		exit                00107d    realocatable   
+****		rloop               001067    realocatable   
+****		fourk               001000    absolute       
+****		buffer              00005d    realocatable   
+****		length              00005a    realocatable   
+****		wloop               001089    realocatable   
+****		rdrec               00105d    realocatable   
+****		retadr              000057    realocatable   
+****		w1                  00004e    realocatable   
+****		input               001083    realocatable   
+****		var3                000384    absolute       
+****		eof                 00004b    realocatable   
+****		cloop               000012    realocatable   
+****		var                 fffc7c    absolute       
+****		first               000000    realocatable   
+****		var1                fffc7c    absolute       
+****		endfil              00002f    realocatable   
+****		var2                000384    absolute       
+****		var4                000012    realocatable   
+****		var5                000000    absolute       
+
+************* 	pass 2 report *************
+
+****	
+
+****	stl	RETADR
+****	opCode=14	flags=110010	operand=054
+****	
+
+****	ldb	#LENGTH
+****	opCode=68	flags=010010	operand=054
+****	
+
+****	lda	=C'4545'
+****	opCode=00	flags=110010	operand=003
+****	
+
+****	lda	=X'4a84'
+****	opCode=00	flags=110010	operand=004
+****	
+
+****	jsub	RDREC
+****	opCode=48	flags=110001	operand=0105d
+****	
+
+****	lda	LENGTH
+****	opCode=00	flags=110010	operand=041
+****	
+
+****	comp	#0
+****	opCode=28	flags=010000	operand=000
+****	
+
+****	jeq	ENDFIL
+****	opCode=30	flags=110010	operand=010
+****	
+
+****	jsub	WRREC
+****	opCode=48	flags=110001	operand=01084
+****	
+
+****	j	CLOOP
+****	opCode=3c	flags=110010	operand=fec
+****	
+
+****	lda	3
+****	opCode=00	flags=110000	operand=003
+****	
+
+****	lda	VAR5
+****	opCode=00	flags=110000	operand=000
+****	
+
+****	lda	#VAR5
+****	opCode=00	flags=010000	operand=000
+****	
+
+****	lda	EOF
+****	opCode=00	flags=110010	operand=019
+****	
+
+****	sta	BUFFER
+****	opCode=0c	flags=110010	operand=028
+****	
+
+****	lda	#3
+****	opCode=00	flags=010000	operand=003
+****	
+
+****	lds	=C'4545'
+****	opCode=6c	flags=110010	operand=fd1
+****	
+
+****	ldt	=123
+****	opCode=74	flags=110010	operand=000
+****	
+
+****	sta	LENGTH
+****	opCode=0c	flags=110010	operand=016
+****	
+
+****	jsub	WRREC
+****	opCode=48	flags=110001	operand=01084
+****	
+
+****	j	@RETADR
+****	opCode=3c	flags=100010	operand=00c
+****	
+
+****	clear	X
+****	opCode=b4			operand=10
+****	
+
+****	clear	A
+****	opCode=b4			operand=00
+****	
+
+****	clear	S
+****	opCode=b4			operand=40
+****	
+
+****	ldt	#fourk
+****	opCode=74	flags=010001	operand=01000
+****	
+
+****	td	INPUT
+****	opCode=e0	flags=110010	operand=019
+****	
+
+****	jeq	RLOOP
+****	opCode=30	flags=110010	operand=ffa
+****	
+
+****	rd	INPUT
+****	opCode=d8	flags=110010	operand=013
+****	
+
+****	compr	A,S
+****	opCode=a0			operand=04
+****	
+
+****	jeq	EXIT
+****	opCode=30	flags=110010	operand=008
+****	
+
+****	stch	BUFFER,X
+****	opCode=54	flags=111100	operand=003
+****	
+
+****	tixr	T
+****	opCode=b8			operand=50
+****	
+
+****	jlt	RLOOP
+****	opCode=38	flags=110010	operand=fea
+****	
+
+****	stx	LENGTH
+****	opCode=10	flags=110100	operand=000
+****	
+
+****	rsub	
+****	opCode=4c	flags=110000	operand=000
+****	
+
+****	clear	X
+****	opCode=b4			operand=10
+****	
+
+****	ldt	LENGTH
+****	opCode=74	flags=110100	operand=000
+****	
+
+****	td	=X'05'
+****	opCode=e0	flags=110010	operand=011
+****	
+
+****	jeq	WLOOP
+****	opCode=30	flags=110010	operand=ffa
+****	
+
+****	ldch	BUFFER,X
+****	opCode=50	flags=111100	operand=003
+****	
+
+****	wd	=X'05'
+****	opCode=dc	flags=110010	operand=008
+****	
+
+****	tixr	T
+****	opCode=b8			operand=50
+****	
+
+****	jlt	WLOOP
+****	opCode=38	flags=110010	operand=fef
+****	
+
+****	rsub	
+****	opCode=4c	flags=110000	operand=000
+

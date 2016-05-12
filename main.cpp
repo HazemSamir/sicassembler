@@ -1,22 +1,30 @@
-#include <bits/stdc++.h>
 #include <getopt.h>
 #include <PassOne.h>
-#include <PassTwo.h>
 #include <FixedFormatReader.h>
 
-using namespace std;
+#ifndef INCLUDES_H
+#include <Includes.h>
+#endif // INCLUDES_H
 
-void runPass1(bool isFixed, string sourceName, string outputName) {
+#include "PassTwo.h"
+
+void run(bool isFixed, string sourceName, string outputName) {
     PassOne *p;
+    string interFile = sourceName+"_list.txt";
+    cout << "source path: \"" << sourceName << "\"" << endl;
+    cout << "intermediate file: \"" << interFile << "\"" << endl;
+    cout << "output file: \"" << outputName << "\"" << endl;
     if(isFixed) {
-        p = new PassOne(new FixedFormatReader(sourceName), outputName);
+        p = new PassOne(new FixedFormatReader(sourceName), interFile);
     } else {
-        p = new PassOne(sourceName, outputName);
+        p = new PassOne(sourceName, interFile);
     }
     p->pass();
-    PassTwo *p2;
-    p2 = new PassTwo(outputName,p->getSymTable(),nullptr,p->getProgramLength());
-    p2->pass();
+    cout << "\n***************************\n\n";
+    if (p->getErrorsCounter() == 0) {
+        PassTwo *p2 = new PassTwo(interFile, p->getSymTable(), p->getLiteralPool(), p->getprogrammLength(), outputName);
+        p2->pass();
+    }
 }
 
 void print_usage();
@@ -50,7 +58,6 @@ int main(int argc, char *argv[]) {
     }
     if (optind == argc - 1) {
         sourcePath = argv[optind];
-        cout << "source path: \"" << sourcePath << "\"" << endl;
     } else if (optind < argc) {
         fprintf (stderr, "too many arguments\n");
         print_usage();
@@ -63,11 +70,11 @@ int main(int argc, char *argv[]) {
     string source(sourcePath);
     string output;
     if (outputPath == NULL) {
-        output = source + "_out.txt";
+        output = source + "_output.txt";
     } else {
         output = *(new string(outputPath));
     }
-    runPass1(isFixed, source, output);
+    run(isFixed, source, output);
     return 0;
 }
 

@@ -1,6 +1,9 @@
 #ifndef DIRECTIVSETABLE_H
 #define DIRECTIVSETABLE_H
+
+#ifndef INCLUDES_H
 #include "Includes.h"
+#endif // INCLUDES_H
 
 class DirectivseTable {
 public:

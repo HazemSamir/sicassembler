@@ -16,13 +16,14 @@ bool IntermediateReader::hasNextLine() {
         if (tmp[0] != '*') {
             ss >> locator;
             getline(ss, line);
-            if (locator[0] == '.') {
+            line = autalities::removeLeadingSpaces(line);
+            if (line[0] == '.') {
                 isComment = true;
             } else {
                 parse(line);
             }
         } else {
-            //comment or warning
+            //error or warning msg
             isComment = true;
         }
     }

@@ -11,40 +11,53 @@ using namespace std;
 
 namespace autalities {
 
-    string tolow(string s);
+string tolow(string s);
 
-    string toUp(string s);
+string toUp(string s);
 
-    void removeTrailingSpaces(string &s);
+string removeLeadingSpaces(string &s);
 
-    string removeLeadingSpaces(string &s);
+void removeTrailingSpaces(string &s);
 
-    void dos2unix(string &s);
+void dos2unix(string &s);
 
-    int toInteger(const string &txt);
+string repeat(const string &word, int times);
 
-    int hexToInteger(const string &txt);
+int toInteger(string &txt);
 
-    int hexToInteger(const char c);
+int hexToInteger(char c);
 
-    char toHexChar(int d);
+int hexToInteger(string &txt);
 
-    string toByte(string decimal);
+char intToHexChar(int d);
 
-    string toByte(int decimal);
+string intToHex(int number);
 
-    string toWord(string decimal);
+string intToHex(int number, int sz);
 
-    string toWord(int decimal);
+string intToBin(int number);
 
-    string toHex(int number);
+string intToBin(int number, int sz);
 
-    int binToInteger(string a);
+int binToInteger(string a);
 
-    int subtractHex(string a, string b);
+int subtractHex(string a, string b);
 
-    bool isHex(string &text);
+string addHex(string a, string b);
 
-    bool checkLocator(string &text);
+string intToByte(int decimal);
+
+string intToByte(string decimal);
+
+string intToWord(int decimal);
+
+string intToWord(string decimal);
+
+string normalize(string s, int sz);
+
+string normalize(string s, int sz, string c);
+
+bool checkLocator(string &text);
+
 }
 #endif // ASSEMBLERUTALITIES_H

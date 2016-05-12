@@ -8,7 +8,7 @@ class IntermediateReader : public FreeFormatReader {
 public:
     IntermediateReader(string fileName) : FreeFormatReader(fileName) {};
     bool hasNextLine();
-    string getLocator(){return locator;}
+    string getLocator() {return locator;}
 protected:
 private:
     string locator;

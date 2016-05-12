@@ -18,14 +18,13 @@ const int MAX_LINE_LENGTH = 66;
 
 bool FixedFormatReader::hasNextLine() {
     string line;
-    bool isTrue = getline(in, line); // there exist a line
+    bool isTrue = ((bool)getline(in, line)); // there exist a line
     initVariables();
     autalities::dos2unix(line);
     currentLine = line;
     if(isTrue) {
         if(line[0] == '.') { // line is a comment
             isComment = true;
-            return isTrue;
         } else {
             int lineLen = line.length();
             if (lineLen >= LABEL_START_INDEX + 1) { // there is label field
@@ -54,15 +53,16 @@ bool FixedFormatReader::hasNextLine() {
             if (lineLen >= OPERAND_START_INDEX + 1) {// there is operand field
                 // operand subtring with space if any
                 operand = line.substr(OPERAND_START_INDEX, min(OPERAND_FIELD_LENGTH, lineLen - OPERAND_START_INDEX));
-                validateOperand();
+                autalities::removeTrailingSpaces(operand);
             }
+            args = OperandValidator::getOperands(operand);
             if(lineLen > MAX_LINE_LENGTH) { // if line length is too long
                 valid = false;
                 addToErrorMessage("line is too long [max=66]");
             }
+            cout << "\"" << label << "\", \"" << operation << "\", \"" << operand << "\"" << endl;
         }
     }
-    cout << "\"" << label << "\", \"" << operation << "\", \"" << operand << "\"" << endl;
     return isTrue;
 }
 

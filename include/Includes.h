@@ -1,7 +1,13 @@
 #ifndef INCLUDES_H
 #define INCLUDES_H
-#include <bits/stdc++.h>
 
+#ifndef BITS
+#include <bits/stdc++.h>
+#endif // BITS
+
+#ifndef REGEX
+#include <regex>
+#endif // REGEX
 
 using namespace std;
 

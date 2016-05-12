@@ -1,0 +1,12 @@
+- Expressions can be used in any sic/xe operation and only used in EQU and ORG directives.
+- We supports simple expressions of (one or two operands), spaces are allowed.
+- You can not override Registers names using EQU, (registers cannot used in expressions).
+- No errors are shown when a absolute address is used in non-immediate operand.
+- No check for the length of the literal.
+- Modification records are generated when the program starts from 0 and only for non-immediate format 4 instructions.
+- LTORG causes unassigned literals from last LTORG/START call.
+- We accepts hex values in operand field of START only (must start with a number digit [0:9]).
+- For free format inline comments are not allowed.
+- Pass 2 stops when an error occurs.
+- No limit byte and char, hex strings length.
+- No error is shown if a decimal value is used in (WORD, immediate addressing) with value greater than one word and unexpected number would be used.
