@@ -77,7 +77,7 @@ public:
                      start address of the modification record of format 4 address
                      relative to start of the program
      */
-    void addModificationRecord(string start);
+    void addModificationRecord(string start, int length=5);
 
 private:
     ofstream out;

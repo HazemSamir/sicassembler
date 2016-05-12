@@ -72,12 +72,12 @@ void ObjectWriter::startNewRecord(string start) {
     startAddress = start;
 }
 
-void ObjectWriter::addModificationRecord(string start) {
-    modification.push_back(autalities::normalize(autalities::toUp(start), 6) + SEPARATOR + "05");
+void ObjectWriter::addModificationRecord(string start, int length) {
+    modification.push_back(autalities::normalize(autalities::toUp(start), 6) + SEPARATOR + autalities::intToByte(length));
 }
 
 void ObjectWriter::writeModificationRecords() {
-    for(auto mod : modification) {
-        out << "M" << mod << "\n";
+    for(auto record : modification) {
+        out << "M" << record << "\n";
     }
 }

@@ -157,8 +157,10 @@ void PassOne::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     }
     int i = 0;
     for (auto arg : args) {
-        if (!(arg.isNumber() && arg.isPlain())) {
-            addErrorMessage(msg, "word supports decimal numeric values only");
+        Sympol symp = OperandValidator::evaluateExpression(arg, locator, symTab);
+        if (!symp.isAbs || !arg.isPlain()) {
+            addErrorMessage(msg, "word supports absolute values only but found ");
+            addErrorMessage(msg, ((symp.isAbs)?string(""):string("relative")) + (arg.isPlain()?string(""):string("notplain")));
             break;
         }
         i++;

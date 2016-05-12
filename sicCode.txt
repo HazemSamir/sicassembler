@@ -1,5 +1,5 @@
 .2345678901234567890
-COPY     START   1000
+COPY     START   0000
 FIRST    STL     RETADR
          LDB     #LENGTH
          BASE    LENGTH
@@ -18,6 +18,9 @@ VAR5     EQU     *-*
          JEQ     ENDFIL
         +JSUB    WRREC
          J       CLOOP
+         LDA     3
+         LDA     VAR5
+         LDA     #VAR5
 ENDFIL   LDA     EOF
          STA     BUFFER
          LDA     #3
@@ -28,6 +31,7 @@ ENDFIL   LDA     EOF
         +JSUB    WRREC
          J       @RETADR
 EOF      BYTE    C'EOF'
+W1       WORD    VAR3,VAR5,2+4
 RETADR   RESW    1
 LENGTH   RESW    1
 BUFFER   RESB    4096

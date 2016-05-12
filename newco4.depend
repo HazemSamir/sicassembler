@@ -113,3 +113,117 @@
 1462914327 source:c:\users\sherief-pc\desktop\sica\src\passtwo.cpp
 	"PassTwo.h"
 
+1462873143 source:/home/zoomer/develop/sica/src/OperandValidator.cpp
+	"OperandValidator.h"
+
+1462872402 /home/zoomer/develop/sica/include/OperandValidator.h
+	"Includes.h"
+	"SymTable.h"
+	"AssemblerUtalities.h"
+
+1462623570 /home/zoomer/develop/sica/include/Includes.h
+	<bits/stdc++.h>
+	<regex>
+
+1462813607 /home/zoomer/develop/sica/include/SymTable.h
+	"Includes.h"
+	"AssemblerUtalities.h"
+
+1462777367 /home/zoomer/develop/sica/include/AssemblerUtalities.h
+	"Includes.h"
+
+1462833059 source:/home/zoomer/develop/sica/main.cpp
+	<getopt.h>
+	<PassOne.h>
+	<FixedFormatReader.h>
+	<Includes.h>
+	"PassTwo.h"
+
+1462831744 /home/zoomer/develop/sica/include/PassOne.h
+	"Includes.h"
+	"InputReader.h"
+	"FreeFormatReader.h"
+	"FixedFormatReader.h"
+	"OpTable.h"
+	"DirectivseTable.h"
+	"SymTable.h"
+	"LiteralPool.h"
+	"OperandValidator.h"
+
+1462623570 /home/zoomer/develop/sica/include/InputReader.h
+	"Includes.h"
+	"AssemblerUtalities.h"
+	"OperandValidator.h"
+
+1462623570 /home/zoomer/develop/sica/include/FreeFormatReader.h
+	"InputReader.h"
+
+1462623570 /home/zoomer/develop/sica/include/FixedFormatReader.h
+	"Includes.h"
+	"InputReader.h"
+
+1462623570 /home/zoomer/develop/sica/include/OpTable.h
+	"Includes.h"
+
+1462623570 /home/zoomer/develop/sica/include/DirectivseTable.h
+	"Includes.h"
+
+1462872956 /home/zoomer/develop/sica/include/LiteralPool.h
+	"Includes.h"
+
+1462832969 /home/zoomer/develop/sica/include/PassTwo.h
+	"Includes.h"
+	"OpTable.h"
+	"DirectivseTable.h"
+	"SymTable.h"
+	"InputReader.h"
+	"IntermediateReader.h"
+	"LiteralPool.h"
+	"ObjectWriter.h"
+
+1462729265 /home/zoomer/develop/sica/include/IntermediateReader.h
+	"FreeFormatReader.h"
+
+1463054322 /home/zoomer/develop/sica/include/ObjectWriter.h
+	"Includes.h"
+	"AssemblerUtalities.h"
+
+1462775424 source:/home/zoomer/develop/sica/src/AssemblerUtalities.cpp
+	"AssemblerUtalities.h"
+
+1462623570 source:/home/zoomer/develop/sica/src/DirectivseTable.cpp
+	"DirectivseTable.h"
+
+1462623570 source:/home/zoomer/develop/sica/src/FixedFormatReader.cpp
+	"FixedFormatReader.h"
+
+1462623570 source:/home/zoomer/develop/sica/src/FreeFormatReader.cpp
+	"FreeFormatReader.h"
+	"Includes.h"
+	"OpTable.h"
+	"DirectivseTable.h"
+
+1462820143 source:/home/zoomer/develop/sica/src/InputReader.cpp
+	"InputReader.h"
+
+1462623570 source:/home/zoomer/develop/sica/src/IntermediateReader.cpp
+	"IntermediateReader.h"
+
+1462872988 source:/home/zoomer/develop/sica/src/LiteralPool.cpp
+	"LiteralPool.h"
+
+1463054368 source:/home/zoomer/develop/sica/src/ObjectWriter.cpp
+	"ObjectWriter.h"
+
+1462623570 source:/home/zoomer/develop/sica/src/OpTable.cpp
+	"OpTable.h"
+
+1463055390 source:/home/zoomer/develop/sica/src/PassOne.cpp
+	"PassOne.h"
+
+1462775831 source:/home/zoomer/develop/sica/src/SymTable.cpp
+	"SymTable.h"
+
+1463054799 source:/home/zoomer/develop/sica/src/PassTwo.cpp
+	"PassTwo.h"
+

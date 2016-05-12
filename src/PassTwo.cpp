@@ -126,8 +126,8 @@ void PassTwo::handelOperation(vector<OperandValidator::Operand> args, string &ms
             } else if (format == 4 && autalities::hexToInteger(address.value) > MAX_MEMORY) {
                 addErrorMessage(msg, "out of memory bounds");
             }
-            if(format == 4 && startingAdress == "000000" && !args[0].isImmediate){
-                opwriter->addModificationRecord(addToLocator(locator,1));
+            if(startingAdress == "000000" && !args[0].isImmediate && (isFormatFour || address.isAbs)){
+                opwriter->addModificationRecord(addToLocator(locator,1), format + (int)isFormatFour);
             }
             address.value = autalities::normalize(address.value, format == 3 ? 3 : 5);
             addToMessage(msg, "opCode=" + opCode + "\tflags=" + flags + "\toperand="+address.value);
@@ -165,7 +165,8 @@ void PassTwo::handelResb(vector<OperandValidator::Operand> args, string &msg) {
 void PassTwo::handelWord(vector<OperandValidator::Operand> args, string &msg) {
     opwriter->startNewRecord(locator);
     for(auto arg : args) {
-        opwriter->writeTextRecord(autalities::intToWord(arg.operand));
+        Sympol symp = OperandValidator::evaluateExpression(arg, locator, symTab);
+        opwriter->writeTextRecord(autalities::normalize(symp.value, 6));
     }
     opwriter->startNewRecord(addToLocator(locator, args.size() * 3));
 }
